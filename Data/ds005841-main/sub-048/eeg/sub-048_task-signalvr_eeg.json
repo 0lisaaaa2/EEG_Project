@@ -1,0 +1,17 @@
+{
+    "TaskName": "signalvr",
+    "SamplingFrequency": 512,
+    "EEGReference": "Average",
+    "EEGGround": "Cms",
+    "SoftwareFilters": {
+        "HighPass": {
+            "CutoffFrequency": 0.1,
+            "FilterOrder": 4
+        },
+        "LowPass": {
+            "CutoffFrequency": 40.0,
+            "FilterOrder": 4
+        }
+    },
+    "PowerLineFrequency": 60
+}
