@@ -17,16 +17,24 @@ ch_types = ["eeg"]
 #     "REF_LIGHT": 1,
 # }
 
-stim_channel = "Status"
+# stim_channel = "Status"
 
-conditions = ["RAND_DARK", "RAND_LIGHT", "REF_DARK", "REF_LIGHT"]
+# maybe calculate 4 erps now, and aggregate into 2 erps later?
+conditions = ["SYM", "ASYM"]
 
-# steps = [
-#     "01-import",
-#     "02-filter",
-#     "03-ica",         # or "03-ref" depending on your config
-#     "04-make_epochs",
-#     "05-evoked"
-# ]
+steps = [
+    # Preprocessing
+    "preprocessing/_01_data_quality",
+    "preprocessing/_04_frequency_filter",
+    "preprocessing/_06a1_fit_ica",
+    "preprocessing/_06a2_find_ica_artifacts",
+    "preprocessing/_08a_apply_ica",
+    "preprocessing/_07_make_epochs",
+    "preprocessing/_09_ptp_reject",
 
+    # Sensor-space ERP
+    "sensor/_01_make_evoked"
+]
+
+interpolate_bads_grand_average = False
 run_source_estimation = False
