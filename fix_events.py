@@ -6,7 +6,7 @@ import numpy as np
 subjects = ["001", "002", "003", "004", "005", "006", "007", "008", "009", "010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038", "039", "040", "041", "042", "043", "044", "045", "046", "047", "048"]
 tasks = ["regfront", "regperp"]
 
-subjects_test = ["001"]
+#subjects_test = ["001"]
 
 data_dir = r"ds005841-download"  
 output_dir = r"ds005841-download"
@@ -48,7 +48,7 @@ def process_subject_task(sub, task):
     events = mne.find_events(raw, stim_channel="Status", initial_event=True)
     
     if task == "regfront":
-            event_dict = event_dict_front
+        event_dict = event_dict_front
     else:
         event_dict = event_dict_perp
     
@@ -74,8 +74,8 @@ def process_subject_task(sub, task):
     # Save TSV
     tsv_path = os.path.join(data_dir, f"sub-{sub}", "eeg", f"sub-{sub}_task-{task}_events.tsv")
     df_events.to_csv(tsv_path, sep="\t", index=False)
-    print(f"Saved events TSV for sub-{sub} task-{task} → {tsv_path}")
+    print(f"Saved events TSV for sub-{sub} task-{task} : {tsv_path}")
 
-for sub in subjects_test:
+for sub in subjects:
     for task in tasks:
         process_subject_task(sub, task)

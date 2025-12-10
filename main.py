@@ -1,5 +1,5 @@
 from config import subjects
-from . import s_00_fetch_data
+import s_00_fetch_data
 
 if __name__ == "__main__":
     for subject in subjects:
