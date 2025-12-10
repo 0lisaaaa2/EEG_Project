@@ -5,5 +5,5 @@ bids_root = "ds005841-download"
 deriv_root = "output/ds005841"
 
 # only analyze subject 001 for now
-#subjects = ["001"]
-task = "regfront"  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr
+subjects = ["001"]
+tasks = ["regfront", "regperp"]  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr

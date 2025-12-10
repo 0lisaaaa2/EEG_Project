@@ -2,23 +2,18 @@ import mne
 from mne_bids import BIDSPath, read_raw_bids
 import numpy as np
 
-def load_data(root):
+import config
 
-    bids_root = root
-
-    subject_id = "001"
-    task = "regfront"    # lumfront, lumperp, regfront, regperp, signalscreen, signalvr -> Was ist signalscreen, signalvr?
+def load_data(sub, task):
 
     bids_path = BIDSPath(
-        subject=subject_id,
+        subject=sub,
         task=task,
         datatype="eeg",
         suffix="eeg",
         extension=".bdf",
-        root=bids_root
+        root=config.bids_root
     )
-
-    #print(bids_path.fpath)
 
     raw = read_raw_bids(bids_path)
     raw.load_data()
