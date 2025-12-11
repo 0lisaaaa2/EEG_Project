@@ -2,10 +2,11 @@ import mne
 from mne_icalabel import label_components
 
 def ica(raw):
-    exg_channels = ['EXG1', 'EXG2', 'EXG3', 'EXG4', 'EXG5', 'EXG6', 'EXG7', 'EXG8']
+    #exg_channels = ['EXG1', 'EXG2', 'EXG3', 'EXG4', 'EXG5', 'EXG6', 'EXG7', 'EXG8']
     raw_ica = raw.copy().pick(picks=mne.pick_types(raw.info, eeg=True))
-    raw_ica.set_channel_types({ch: 'misc' for ch in exg_channels if ch in raw.ch_names})
+    #raw_ica.set_channel_types({ch: 'misc' for ch in exg_channels if ch in raw.ch_names})
     raw_ica = raw_ica.filter(l_freq=1.0, h_freq=None)
+    
     raw_ica.set_montage('standard_1020')
     
     ica = mne.preprocessing.ICA(
@@ -14,6 +15,11 @@ def ica(raw):
         max_iter="auto",
         random_state=97
     )
+
+    #ica_raw = raw.copy().drop_channels(raw.info['bads'])
+    #ica_raw.set_montage('standard_1020')
+    #ica.fit(ica_raw)
+
     ica.fit(raw_ica)
 
     # show time series of ICs
