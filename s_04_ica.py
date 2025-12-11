@@ -14,4 +14,5 @@ def ica(raw):
     )
     ica.fit(raw_ica)
     ica.plot_components()
+    ica.exclude = [1]
     return ica.apply(raw.copy())
