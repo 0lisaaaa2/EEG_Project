@@ -1,7 +1,7 @@
 from config import subjects, tasks
 import s_00_fetch_data
 import config
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation
 import matplotlib.pyplot as plt
 
 
@@ -22,7 +22,11 @@ if __name__ == "__main__":
 
             #bad channels (does nothing at the moment)
             s_03_remove_bad_channels.remove_bad_channels(filter_raw)
+            filter_raw.plot(block=True, scalings=40e-6)
 
             #ica and plot
             clean_raw = s_04_ica.ica(filter_raw)
             clean_raw.plot(block=True, scalings=40e-6)
+
+            inter_raw = s_05_interpolation.interpolate_bad_channels(clean_raw)
+            inter_raw.plot(block=True, scalings=40e-6)
