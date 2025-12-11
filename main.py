@@ -20,10 +20,8 @@ if __name__ == "__main__":
             filter_raw = s_01_filter.filter(resample_raw)
             filter_raw.plot(block=True, scalings=40e-6)
 
-            #bad channels
-            #raw.info["bads"] = s_03_remove_bad_channels.auto_find_bad_channels(raw)
-            #raw.info["bads"] = ["Fz", "PO4", "CP6"]
-            #raw.plot(block=True, scalings=40e-6)
+            #bad channels (does nothing at the moment)
+            s_03_remove_bad_channels.remove_bad_channels(filter_raw)
 
             #ica and plot
             clean_raw = s_04_ica.ica(filter_raw)
