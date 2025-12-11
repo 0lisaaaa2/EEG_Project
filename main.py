@@ -3,6 +3,7 @@ import config
 import s_00_fetch_data, s_02_downsample
 import matplotlib.pyplot as plt
 
+
 if __name__ == "__main__":
     for subject in subjects:
         for task in tasks:
