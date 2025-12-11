@@ -52,3 +52,5 @@ def filter(raw):
     raw_after_highlow = highlowpass(raw)
     raw_after_notch = notch(raw_after_highlow)
     frequencyspectrum(raw, raw_after_highlow, raw_after_notch)
+
+    return raw_after_notch
