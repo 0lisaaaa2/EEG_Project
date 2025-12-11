@@ -7,3 +7,5 @@ deriv_root = "output/ds005841"
 # only analyze subject 001 for now
 subjects = ["001"]
 tasks = ["regfront", "regperp"]  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr
+
+sample_rate = 256 # resample to 256 Hz
