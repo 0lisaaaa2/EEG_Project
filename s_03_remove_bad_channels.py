@@ -1,36 +1,65 @@
-import numpy as np
 import mne
-
-def find_flat_channels(raw, thresh=1e-7):
-    data = raw.get_data()
-    variances = data.var(axis=1)
-    flat = [raw.ch_names[i] for i, var in enumerate(variances) if var < thresh]
-    return flat
-
-def find_bad_amplitude(raw, z_thresh=3):
-    data = raw.get_data()
-    variances = data.var(axis=1)
-
-    z = (variances - variances.mean()) / variances.std()
-    bads = [raw.ch_names[i] for i, zi in enumerate(z) if abs(zi) > z_thresh]
-    return bads
+import os
+import pandas as pd
+import config
 
 
-def find_bad_corr(raw, thresh=0.4):
-    data = raw.get_data()
+def remove_bad_channels(raw):
 
-    # Korrelationsmatrix
-    corr = np.corrcoef(data)
-    mean_corr = corr.mean(axis=1)
+    # load existing annotations if any
+    load_and_apply_annotations(raw, config.anno_root)
 
-    bads = [raw.ch_names[i] for i, mc in enumerate(mean_corr) if mc < thresh]
-    return bads
+    #print("Before doing anything new: ", raw.annotations)
 
-def auto_find_bad_channels(raw):
-    bads = set()
+    # manually annotate data
+    raw.plot(block=True, scalings=40e-6)
 
-    bads.update(find_flat_channels(raw))
-    bads.update(find_bad_amplitude(raw, z_thresh=3))
-    bads.update(find_bad_corr(raw, thresh=0.4))
+    #print(f"Identified bad channels: {raw.info['bads']}")
 
-    return list(bads)
+    # # Drop bad channels from the raw data
+    # raw_cleaned = raw.copy().drop_channels(raw.info['bads']) -> do we want to do this before ica?
+
+    # save annotations for future use
+    save_bad_annotations(raw, config.anno_root, overwrite=True)
+    print("After doing something new: ", raw.annotations)
+    return None
+
+
+def save_bad_annotations(raw, base_path, overwrite=False):
+    bad_anno = raw.annotations
+
+    fif_path = base_path + ".fif"
+    csv_path = base_path + ".csv"
+
+    # --- Save real MNE annotation file ---
+    print(f"Saving MNE annotation file: {fif_path}")
+    bad_anno.save(fif_path, overwrite=True)
+
+    # --- Save as CSV for inspection ---
+    df = pd.DataFrame({
+        "onset": bad_anno.onset,
+        "duration": bad_anno.duration,
+        "description": bad_anno.description,
+    })
+    print(f"Saving CSV annotation file: {csv_path}")
+    df.to_csv(csv_path, index=False)
+
+def load_and_apply_annotations(raw, base_path):
+    fif_path = base_path + ".fif"
+
+    if not os.path.exists(fif_path):
+        print(f"No annotation file found at {fif_path}. Skipping load.")
+        return
+
+    loaded = mne.read_annotations(fif_path)
+
+    # Match orig_time
+    loaded = mne.Annotations(
+        onset=loaded.onset,
+        duration=loaded.duration,
+        description=loaded.description,
+        orig_time=raw.annotations.orig_time,
+    )
+
+    raw.set_annotations(raw.annotations + loaded)
+    print("Loaded annotations into raw.")
