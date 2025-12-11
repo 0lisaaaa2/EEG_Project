@@ -1,77 +1,65 @@
 import mne
 import os
 import pandas as pd
+import config
 
 
 def remove_bad_channels(raw):
 
+    # load existing annotations if any
+    load_and_apply_annotations(raw, config.anno_root)
+
+    #print("Before doing anything new: ", raw.annotations)
+
+    # manually annotate data
     raw.plot(block=True, scalings=40e-6)
 
-    print(f"Identified bad channels: {raw.info['bads']}")
+    #print(f"Identified bad channels: {raw.info['bads']}")
 
     # # Drop bad channels from the raw data
     # raw_cleaned = raw.copy().drop_channels(raw.info['bads']) -> do we want to do this before ica?
 
-
-
-    filename = r"D:\lisa-\Universität_2\Master\2. Semester\EEG\EEG_Project\bad_annotations.csv"
-    save_bad_annotations(raw, filename, overwrite=False)
-
-    print(raw.annotations)
-
-
+    # save annotations for future use
+    save_bad_annotations(raw, config.anno_root, overwrite=True)
+    print("After doing something new: ", raw.annotations)
     return None
 
 
-def save_bad_annotations(raw, filename, overwrite=False):
-    """
-    Extracts BAD_ annotations from raw,
-    and saves them to a CSV file.
-
-    If the file already exists:
-        • overwrite=True  → replace the file
-        • overwrite=False → append new rows to existing file
-    """
-
-    # --- Extract only BAD annotations ---
-    #bad_anno = [a for a in raw.annotations if a['description'].startswith("BAD_")]
+def save_bad_annotations(raw, base_path, overwrite=False):
     bad_anno = raw.annotations
 
-    if len(bad_anno) == 0:
-        print("No BAD_ annotations found.")
+    fif_path = base_path + ".fif"
+    csv_path = base_path + ".csv"
+
+    # --- Save real MNE annotation file ---
+    print(f"Saving MNE annotation file: {fif_path}")
+    bad_anno.save(fif_path, overwrite=True)
+
+    # --- Save as CSV for inspection ---
+    df = pd.DataFrame({
+        "onset": bad_anno.onset,
+        "duration": bad_anno.duration,
+        "description": bad_anno.description,
+    })
+    print(f"Saving CSV annotation file: {csv_path}")
+    df.to_csv(csv_path, index=False)
+
+def load_and_apply_annotations(raw, base_path):
+    fif_path = base_path + ".fif"
+
+    if not os.path.exists(fif_path):
+        print(f"No annotation file found at {fif_path}. Skipping load.")
         return
 
-    # Convert to DataFrame for easy CSV handling
-    df_new = pd.DataFrame({
-        'onset':     [a['onset'] for a in bad_anno],
-        'duration':  [a['duration'] for a in bad_anno],
-        'description': [a['description'] for a in bad_anno],
-    })
+    loaded = mne.read_annotations(fif_path)
 
-    # --- If file exists, decide between overwriting vs appending ---
-    if os.path.exists(filename) and not overwrite:
-        print(f"Appending to existing annotation file: {filename}")
-        df_old = pd.read_csv(filename)
-        df_combined = pd.concat([df_old, df_new], ignore_index=True)
-        df_combined.to_csv(filename, index=False)
-    else:
-        print(f"Saving new annotation file: {filename}")
-        df_new.to_csv(filename, index=False)
-
-
-
-def load_and_apply_annotations(raw, filename):
-    """
-    Load annotations from CSV and add them to raw.
-    """
-    df = pd.read_csv(filename)
-
-    loaded_anno = mne.Annotations(
-        onset=df['onset'].tolist(),
-        duration=df['duration'].tolist(),
-        description=df['description'].tolist()
+    # Match orig_time
+    loaded = mne.Annotations(
+        onset=loaded.onset,
+        duration=loaded.duration,
+        description=loaded.description,
+        orig_time=raw.annotations.orig_time,
     )
 
-    raw.set_annotations(raw.annotations + loaded_anno)
-    print(f"Loaded {len(df)} annotations into raw.")
-
+    raw.set_annotations(raw.annotations + loaded)
+    print("Loaded annotations into raw.")

@@ -4,6 +4,8 @@ bids_root = "ds005841-download"
 # root of derivates directory in which the pipeline will store the processing results
 deriv_root = "output/ds005841"
 
+anno_root = "bad_annotations"
+
 # only analyze subject 001 for now
 subjects = ["001"]
 tasks = ["regfront"]  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr

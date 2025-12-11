@@ -12,6 +12,6 @@ if __name__ == "__main__":
             raw = s_00_fetch_data.load_data(subject, task)
             filter_raw = s_01_filter.filter(raw)
             #print(raw)
-            resample_raw = s_02_downsample.downsample_data(raw, config.sample_rate)
+            resample_raw = s_02_downsample.downsample_data(filter_raw, config.sample_rate)
             s_03_remove_bad_channels.remove_bad_channels(resample_raw)
             print("success!")
