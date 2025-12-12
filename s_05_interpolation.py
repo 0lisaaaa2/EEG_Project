@@ -13,6 +13,11 @@ def interpolate_bad_channels(raw):
     before = raw.copy().get_data(picks=["P1"])
     raw_interp.interpolate_bads(reset_bads=True)
     after = raw_interp.get_data(picks=["P1"])
-    print("Before:", before[:,:5])
-    print("After:", after[:,:5])
+
+    #print("Before:", before[:,:5])
+    #print("After:", after[:,:5])
+
+    #raw.plot(block=True, scalings=40e-6, picks=["P1", "POz", "Pz"])
+    #raw_interp.plot(block=True, scalings=40e-6, picks=["P1", "POz", "Pz"])
+
     return raw_interp
