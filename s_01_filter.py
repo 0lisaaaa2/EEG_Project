@@ -1,25 +1,29 @@
-# davor und dannach frequency spectrum plotten, damit man sieht was rausgefiltert wurde
-
 import matplotlib.pyplot as plt
 import numpy as np
-import mne
 import config
 
 
+"""
+Function to print the frequencyspectrum for three functions
+input: raw_before_filter, raw_after_highlow, raw_after_notch (eeg-data before and after high- and low-pass-filter and after notch-filter)
+"""
 def frequencyspectrum(raw_before_filter, raw_after_highlow, raw_after_notch, fmax=100):
+    # Calculate psd
     psd_before_filter = raw_before_filter.compute_psd(fmax=fmax)
     psd_after_highlow = raw_after_highlow.compute_psd(fmax=fmax)
     psd_after_notch = raw_after_notch.compute_psd(fmax=fmax)
 
-    # Mittelwert über alle Kanäle
+    # Mean over all channels
     psd_before_filter_mean = psd_before_filter.get_data().mean(axis=0)
     psd_after_highlow_mean = psd_after_highlow.get_data().mean(axis=0)
     psd_after_notch_mean = psd_after_notch.get_data().mean(axis=0)
 
+    # Get frequenzies
     freqs_1 = psd_before_filter.freqs
     freqs_2 = psd_after_highlow.freqs
     freqs_3 = psd_after_notch.freqs
 
+    # Plot the plot
     plt.figure(figsize=(10, 5))
     plt.plot(freqs_1, 10 * np.log10(psd_before_filter_mean), label='Before Filtering')
     plt.plot(freqs_2, 10 * np.log10(psd_after_highlow_mean), label='After HighLowPass Filter')
@@ -31,6 +35,11 @@ def frequencyspectrum(raw_before_filter, raw_after_highlow, raw_after_notch, fma
     plt.show()
 
 
+"""
+Use a high- and low-pass-filter on data
+input: raw (EEG-data)
+output: raw_filtered (EEG-data after high- and low-pass-filtering)
+"""
 def highlowpass(raw):
     highpass = config.highpass
     lowpass = config.lowpass
@@ -41,14 +50,22 @@ def highlowpass(raw):
     return raw_filtered
 
 
+"""
+Use a notch-filter on data
+input: raw (EEG-data)
+output: raw_filtered (EEG-data after notch-filtering)
+"""
 def notch(raw):
     frequency = config.notch
     return raw.copy().notch_filter(frequency)
 
 
-
+"""
+Use a high- and low-pass- and a notch-filter on data and print power frequencyspectrum.
+input: raw (EEG-data)
+output: raw_filtered (EEG-data after filtering)
+"""
 def filter(raw):
-    # raw = s_00_fetch_data.load_data("001", "regfront")
     raw_after_highlow = highlowpass(raw)
     raw_after_notch = notch(raw_after_highlow)
     frequencyspectrum(raw, raw_after_highlow, raw_after_notch)
