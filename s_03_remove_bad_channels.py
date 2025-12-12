@@ -17,8 +17,7 @@ def remove_bad_channels(raw):
     # manually annotate data
     raw.plot(block=True, scalings=40e-6)
 
-    #raw.info['bads'] = ["P1", "P3", "PO3", "POz", "Pz", "Status"]
-    raw.info['bads'] = ["P1", "POz", "Pz", "Status", "EXG1", "EXG2", "EXG3", "EXG4", "EXG5", "EXG6", "EXG7", "EXG8"]
+    raw.info['bads'] = config.bads
 
     #print(f"Identified bad channels: {raw.info['bads']}")
 
