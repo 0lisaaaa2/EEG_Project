@@ -9,8 +9,10 @@ output: raw_ica (copied and prepared EEG data)
 """
 def get_ica_copy(raw):
     raw_ica = raw.copy().pick(picks=mne.pick_types(raw.info, eeg=True))
+    #raw_ica = raw.copy().pick(picks=mne.pick_types(raw.info, eeg=True, meg=False, eog=True, exclude='bads'))
     raw_ica = raw_ica.filter(l_freq=1.0, h_freq=None)
     raw_ica.set_montage('standard_1020')
+    #raw_ica = raw_ica.set_eeg_reference('average') # is this required?
     return raw_ica
 
 
@@ -22,7 +24,7 @@ output: ica
 def get_ica(raw):
     ica = mne.preprocessing.ICA(
         n_components=0.99,
-        method="fastica",
+        method="fastica", #"fastica"
         max_iter="auto",
         random_state=97
     )
@@ -33,7 +35,7 @@ def get_ica(raw):
 Label all components found during ICA
 input: raw (EEG Data), ica
 """
-def label_components(raw, ica):
+def label_components_ica(raw, ica):
     labels = label_components(raw, ica, method='iclabel') # probabilities per IC and category
     print(labels)
     return labels
@@ -59,12 +61,12 @@ input: raw (EEG Data)
 return: raw_cleaned (EEG Data after ICA)
 """
 def ica(raw):
-    raw_ica = get_ica(raw)
+    raw_ica = get_ica_copy(raw)
     ica = get_ica(raw_ica)
 
     ica.fit(raw_ica)
 
-    labels = label_components(raw_ica, ica)
+    labels = label_components_ica(raw_ica, ica)
 
     # show time series of ICs
     ica.plot_sources(raw, show_scrollbars=True, show=True)
