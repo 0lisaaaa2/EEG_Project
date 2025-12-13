@@ -15,7 +15,7 @@ def remove_bad_channels(raw):
     #print("Before doing anything new: ", raw.annotations)
 
     # manually annotate data
-    #raw.plot(block=True, scalings=40e-6)
+    #raw.plot(block=True, scalings=40e-6, title='Mark Bad Channels and Annotate Bad Segments - Close Window When Finished!')
 
     raw.info['bads'] = config.bads
 

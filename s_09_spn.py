@@ -9,12 +9,8 @@ for erp, include all electrodes, restrict only in spn calculation
 
 """
 
-# alrady focus on posterior cluster in spn calculation?
+# alrady focus on posterior cluster in spn calculation? implement both versions for now
 
-# defined in paper
-left_post = ["P3", "P5", "P7", "P9", "PO7", "PO3", "O1"]
-right_post = ["P4", "P6", "P8", "P10", "PO8", "PO4", "O2"]
-posterior_channels = left_post + right_post
 
 # not sure if calculate spn for all channels or only posterior?
 def compute_spn_all(erp_sym, erp_asym):
@@ -22,28 +18,26 @@ def compute_spn_all(erp_sym, erp_asym):
     # compute SPN as difference wave (SYM - ASYM)
     spn = mne.combine_evoked([erp_sym, erp_asym], weights=[1, -1])
 
-
-    # visualize SPN
-
     return spn
 
 
 def compute_spn_posterior(erp_sym, erp_asym):
     # pick only posterior channels
-    erp_sym_post = erp_sym.copy().pick_channels(posterior_channels)
-    erp_asym_post = erp_asym.copy().pick_channels(posterior_channels)
+    erp_sym_post = erp_sym.copy().pick_channels(config.posterior_channels)
+    erp_asym_post = erp_asym.copy().pick_channels(config.posterior_channels)
 
     # compute SPN (SYM - ASYM)
     spn = mne.combine_evoked([erp_sym_post, erp_asym_post], weights=[1, -1])
 
     # visualize SPN
-    plot_spn_vs_erps(erp_sym_post, erp_asym_post, spn, posterior_channels=posterior_channels)
+    plot_spn_vs_erps(erp_sym_post, erp_asym_post, spn, posterior_channels=config.posterior_channels)
     
-
     spn_amplitude = extract_spn_amplitude(spn)
 
     return spn, spn_amplitude
 
+
+# calculate average spn amplitude in defined time window
 def extract_spn_amplitude(spn):
     # define time window for SPN measurement
     tmin_spn = config.tmin_spn
@@ -58,7 +52,7 @@ def extract_spn_amplitude(spn):
 
 
 # plot spn vs erps in one plot
-def plot_spn_vs_erps(erp_sym, erp_asym, spn, posterior_channels=posterior_channels):
+def plot_spn_vs_erps(erp_sym, erp_asym, spn, posterior_channels=config.posterior_channels):
 
     mne.viz.plot_compare_evokeds(
         {
