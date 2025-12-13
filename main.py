@@ -1,8 +1,6 @@
 from config import subjects, tasks
 import config
 import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost
-import matplotlib.pyplot as plt
-
 
 if __name__ == "__main__":
 
