@@ -12,7 +12,7 @@ for erp, include all electrodes, restrict only in spn calculation
 
 def compute_erp_all(epochs):
 
-    print("Amount of epochs:", len(epochs['sym']), len(epochs['asym']))
+    print("Amount of epochs:", len(epochs['SYM'].events), len(epochs['ASYM'].events)) #len(Epochs.events)
 
 
     baseline = (config.tmin_baseline, config.tmax_baseline)

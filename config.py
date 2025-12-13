@@ -22,3 +22,6 @@ bads = ["P1", "POz", "Pz", "Status", "EXG1", "EXG2", "EXG3", "EXG4", "EXG5", "EX
 tmin_baseline = -0.2 
 tmax_baseline = 0.0    
 
+tmin_spn = 0.3
+tmax_spn = 0.6
+

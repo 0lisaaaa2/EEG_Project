@@ -1,7 +1,7 @@
 from config import subjects, tasks
 import s_00_fetch_data
 import config
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp, s_09_spn
 import matplotlib.pyplot as plt
 
 
@@ -41,4 +41,7 @@ if __name__ == "__main__":
             #epochs.plot(block=True, scalings=40e-6)
 
             # erp and baseline correct and plot
-            erp_sym, erp_asym = s_08_erp.compute_erp(epochs)
+            erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
+
+            # spn
+            spn, spn_amplitude = s_09_spn.compute_spn_posterior(erp_sym, erp_asym)
