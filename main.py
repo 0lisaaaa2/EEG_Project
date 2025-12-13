@@ -1,6 +1,6 @@
 from config import subjects, tasks
 import config
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost
 
 if __name__ == "__main__":
 
@@ -20,9 +20,9 @@ if __name__ == "__main__":
             filter_raw = s_01_filter.filter(resample_raw)
             #filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
-            #bad channels (does nothing at the moment)
-            s_03_remove_bad_channels.remove_bad_channels(filter_raw)
-            #filter_raw.plot(block=True, scalings=40e-6, title='Data after Bad Channel Removal')
+            # data annotation of bad channels and bad segmetns and plot
+            s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
             #ica and plot
             clean_raw = s_04_ica.ica(filter_raw)
