@@ -10,12 +10,12 @@ import numpy as np
 def remove_bad_channels(raw):
 
     # load existing annotations if any
-    load_and_apply_annotations(raw, config.anno_root)
+    #load_and_apply_annotations(raw, config.anno_root)
 
     #print("Before doing anything new: ", raw.annotations)
 
     # manually annotate data
-    raw.plot(block=True, scalings=40e-6)
+    #raw.plot(block=True, scalings=40e-6)
 
     raw.info['bads'] = config.bads
 
@@ -25,8 +25,8 @@ def remove_bad_channels(raw):
     # raw_cleaned = raw.copy().drop_channels(raw.info['bads']) -> do we want to do this before ica?
 
     # save annotations for future use
-    save_bad_annotations(raw, config.anno_root, overwrite=True)
-    print("After doing something new: ", raw.annotations)
+    #save_bad_annotations(raw, config.anno_root, overwrite=True)
+    #print("After doing something new: ", raw.annotations)
     return None
 
 

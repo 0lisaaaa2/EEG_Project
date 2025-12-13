@@ -1,7 +1,7 @@
 from config import subjects, tasks
 import s_00_fetch_data
 import config
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_remove_bad_channels, s_04_ica, s_05_interpolation, s_06_rereference, s_07_epochs, s_08_erp
 import matplotlib.pyplot as plt
 
 
@@ -34,8 +34,11 @@ if __name__ == "__main__":
 
             # rereferencing and plot
             reref_raw = s_06_rereference.rereferencing(inter_raw)
-            reref_raw.plot(block=True, scalings=40e-6)
+            #reref_raw.plot(block=True, scalings=40e-6)
 
             # epoching and plot
             epochs = s_07_epochs.epoching(reref_raw)
             #epochs.plot(block=True, scalings=40e-6)
+
+            # erp and baseline correct and plot
+            erp_sym, erp_asym = s_08_erp.compute_erp(epochs)
