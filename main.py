@@ -10,31 +10,31 @@ if __name__ == "__main__":
         for task in tasks:
             #get raw data and plot
             raw = s_00_fetch_data.load_data(subject, task)
-            #raw.plot(block=True, scalings=40e-6, title='Raw Data')
+            raw.plot(block=True, scalings=40e-6, title='Raw Data')
 
             #resample and plot
             resample_raw = s_02_downsample.downsample_data(raw, config.sample_rate)
-            #resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
+            resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
 
             #filter and plot
             filter_raw = s_01_filter.filter(resample_raw)
-            #filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
+            filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
             s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-            #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
+            filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
             #ica and plot
             clean_raw = s_04_ica.ica(filter_raw)
-            #clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
+            clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
 
             # interpolation of bad and plot
             inter_raw = s_05_interpolation.interpolate_bad_channels(clean_raw)
-            #inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
+            inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
 
             # rereferencing and plot
             reref_raw = s_06_rereference.rereferencing(inter_raw)
-            #reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
+            reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
 
             # epoching and plot
             epochs = s_07_epochs.epoching(reref_raw)

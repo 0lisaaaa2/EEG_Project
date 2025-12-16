@@ -11,5 +11,8 @@ def epoching(raw, tmin=-0.2, tmax=0.8):
     #print("evnets", events)
     #print("event_id", event_id)
 
-    epochs = mne.Epochs(raw, events, event_id, tmin, tmax, reject_by_annotation=True, event_repeated='drop')
+    # set rejection criteria for peak to peak
+    reject_criteria = dict(eeg=200e-6) # 200 µV
+
+    epochs = mne.Epochs(raw, events, event_id, tmin, tmax, reject_by_annotation=True, event_repeated='drop', reject=reject_criteria)
     return epochs

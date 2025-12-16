@@ -20,7 +20,7 @@ def compute_erp_all(epochs):
     erp_asym = epochs['ASYM'].average().apply_baseline(baseline)
 
     # visualize ERPs
-    plot_erps(erp_sym, erp_asym)
+    #plot_erps(erp_sym, erp_asym)
 
     # visualize ERPs for a specific channel, e.g., 'Cz'
     plot_erps_channel(erp_sym, erp_asym, channel_name='Cz')
@@ -33,7 +33,7 @@ def compute_erp_all(epochs):
 
 
 # Compare ERPs for SYM and ASYM conditions
-# looks weird?
+# not a helpful visualization, ignore for now
 def plot_erps(erp_sym, erp_asym, picks="eeg"):
     mne.viz.plot_compare_evokeds(
         {"SYM": erp_sym, "ASYM": erp_asym},
