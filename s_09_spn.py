@@ -1,6 +1,7 @@
 import mne
 import config
 
+
 """
 authors only calculate spn for posterior electrode cluster
 -> where SPN is expected to be most pronounced
@@ -9,7 +10,7 @@ for erp, include all electrodes, restrict only in spn calculation
 
 """
 
-# alrady focus on posterior cluster in spn calculation? implement both versions for now
+# already focus on posterior cluster in spn calculation? implement both versions for now
 
 
 # not sure if calculate spn for all channels or only posterior?
