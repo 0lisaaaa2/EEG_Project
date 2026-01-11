@@ -7,7 +7,8 @@ deriv_root = "output/ds005841"
 anno_root = "annotations"
 
 # only analyze subject 001 and regfront for now
-subjects = ["001", "002"]
+subjects = ["001", "002", "003", "004", "005", "007", "008", "009", "011", "012", "013", "014", "016", "018", "020", "021", "022", "023", "025", "027", "028", "029", "030", "031", "032", "033", "034", "035", "036", "037", "038", "040", "041", "042", "043", "044", "045", "046", "047", "048"]
+#subjects = ["006", "010", "015", "017", "019", "024", "026", "039"] #6,10,19, 26, 39 max() arg is an empty sequence, 15, 24 One PCA component captures most of the explained variance (99.96785153337908%), your threshold results in 1 component. You should select a higher value, 17 werte nan
 tasks = ["regfront", "regperp"]  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr
 
 # Filter frequencys specification

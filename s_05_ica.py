@@ -26,7 +26,8 @@ def get_ica(raw):
         n_components=0.99,
         method="infomax", #"fastica" -> use infomax because of icalabel recommendation
         max_iter="auto",
-        random_state=97
+        random_state=97,
+        verbose = False
     )
     return ica
 
@@ -37,7 +38,7 @@ input: raw (EEG Data), ica
 """
 def label_components_ica(raw, ica):
     labels = label_components(raw, ica, method='iclabel') # probabilities per IC and category
-    print(labels)
+    #print(labels)
     return labels
 
 
@@ -51,7 +52,7 @@ def exclude_components(ica, labels):
         idx for idx, lbl in enumerate(labels['labels'])
         if lbl not in ['brain', 'other'] and labels['y_pred_proba'][idx] >= 0.8
     ]
-    print(f"Excluding components: {excluded_components}")
+    #print(f"Excluding components: {excluded_components}")
     ica.exclude = excluded_components
 
 

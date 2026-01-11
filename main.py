@@ -15,6 +15,8 @@ if __name__ == "__main__":
     grand_cost_amps = []
 
     for subject in subjects:
+        print("#######################################################################")
+        print("start subject", subject)
         for task in tasks:
             #get raw data and plot
             raw = s_00_fetch_data.load_data(subject, task)
