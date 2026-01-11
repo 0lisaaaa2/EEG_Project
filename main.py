@@ -21,12 +21,10 @@ if __name__ == "__main__":
             filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
-            s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            #s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            s_03_data_annotation.detect_bad_channels(filter_raw)
+            #s_03_data_annotation.detect_bad_annotationa(filter_raw)
             #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
-
-            # rereferencing and plot
-            reref_raw = s_04_rereference.rereferencing(filter_raw)
-            #reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
 
             #ica and plot
             clean_raw = s_05_ica.ica(reref_raw)
