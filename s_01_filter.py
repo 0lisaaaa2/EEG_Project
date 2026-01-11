@@ -32,17 +32,17 @@ def frequencyspectrum(raw_before_filter, raw_after_highlow, raw_after_notch, fma
     freqs = psd_before_filter.freqs
 
     # Plot
-    plt.figure(figsize=(10, 5))
-    plt.plot(freqs, psd_before_mean, label='Before Filtering')
-    plt.plot(freqs, psd_highlow_mean, label='After High/Low-pass Filter')
-    plt.plot(freqs, psd_notch_mean, label='After Notch Filter')
+    #plt.figure(figsize=(10, 5))
+    #plt.plot(freqs, psd_before_mean, label='Before Filtering')
+    #plt.plot(freqs, psd_highlow_mean, label='After High/Low-pass Filter')
+    #plt.plot(freqs, psd_notch_mean, label='After Notch Filter')
 
-    plt.xlabel("Frequency (Hz)")
-    plt.ylabel("Power (dB µV²/Hz)")
-    plt.title("Power Spectrum Before vs After Filtering")
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+    #plt.xlabel("Frequency (Hz)")
+    #plt.ylabel("Power (dB µV²/Hz)")
+    #plt.title("Power Spectrum Before vs After Filtering")
+    #plt.legend()
+    #plt.tight_layout()
+    #plt.show()
     
     # # Calculate psd
     # psd_before_filter = raw_before_filter.compute_psd(fmax=fmax)
