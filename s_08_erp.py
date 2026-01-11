@@ -9,26 +9,25 @@ for erp, include all electrodes, restrict only in spn calculation
 
 """
 
-
 def compute_erp_all(epochs):
 
     print("Amount of epochs:", len(epochs['SYM'].events), len(epochs['ASYM'].events)) #len(Epochs.events)
 
 
     baseline = (config.tmin_baseline, config.tmax_baseline)
-    erp_sym = epochs['SYM'].average().apply_baseline(baseline)
-    erp_asym = epochs['ASYM'].average().apply_baseline(baseline)
+    erp_sym_all = epochs['SYM'].average().apply_baseline(baseline)
+    erp_asym_all = epochs['ASYM'].average().apply_baseline(baseline)
 
     # visualize ERPs
     #plot_erps(erp_sym, erp_asym)
 
-    # visualize ERPs for a specific channel, e.g., 'Cz'
-    plot_erps_channel(erp_sym, erp_asym, channel_name='Cz')
+    # visualize ERPs for a specific channel, e.g., 'Cz' -> choose posterior channel
+    plot_erps_channel(erp_sym_all, erp_asym_all, channel_name='PO7')
 
     # butterfly plot for SYM condition
-    plot_butterfly(erp_sym, title="Butterfly Plot - SYM condition")
+    plot_butterfly(erp_sym_all, title="Butterfly Plot - SYM condition")
 
-    return erp_sym, erp_asym
+    return erp_sym_all, erp_asym_all
 
 
 
@@ -53,7 +52,7 @@ def plot_erps_channel(erp_sym, erp_asym, channel_name):
         title=f"ERP comparison at channel {channel_name} (SYM vs ASYM)"
     )
 
-# Butterfly plot
+# Butterfly plot -> sanity check: more reaction in posterior channels?
 def plot_butterfly(erp, title="Butterfly Plot"):
     erp.plot(
         spatial_colors=True,

@@ -24,20 +24,24 @@ if __name__ == "__main__":
             s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
             filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
+            # rereferencing and plot
+            reref_raw = s_06_rereference.rereferencing(filter_raw)
+            reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
+
             #ica and plot
-            clean_raw = s_04_ica.ica(filter_raw)
+            clean_raw = s_04_ica.ica(reref_raw)
             clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
 
             # interpolation of bad and plot
             inter_raw = s_05_interpolation.interpolate_bad_channels(clean_raw)
             inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
 
-            # rereferencing and plot
-            reref_raw = s_06_rereference.rereferencing(inter_raw)
-            reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
+            # # rereferencing and plot -> move before ica
+            # reref_raw = s_06_rereference.rereferencing(inter_raw)
+            # reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
 
             # epoching and plot
-            epochs = s_07_epochs.epoching(reref_raw)
+            epochs = s_07_epochs.epoching(inter_raw)
 
             # erp and baseline correct and plot
             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
