@@ -7,7 +7,7 @@ deriv_root = "output/ds005841"
 anno_root = "annotations"
 
 # only analyze subject 001 and regfront for now
-subjects = ["001", "002"]
+subjects = ["024"]
 tasks = ["regfront", "regperp"]  # lumfront, lumperp, regfront, regperp, signalscreen, signalvr
 
 # Filter frequencys specification

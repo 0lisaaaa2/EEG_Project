@@ -42,7 +42,7 @@ def frequencyspectrum(raw_before_filter, raw_after_highlow, raw_after_notch, fma
     plt.title("Power Spectrum Before vs After Filtering")
     plt.legend()
     plt.tight_layout()
-    #plt.show()
+    plt.show()
     
     # # Calculate psd
     # psd_before_filter = raw_before_filter.compute_psd(fmax=fmax)
