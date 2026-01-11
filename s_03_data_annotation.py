@@ -1,9 +1,55 @@
 import mne
 import os
 import config
+from pyprep.prep_pipeline import PrepPipeline
 import matplotlib.pyplot as plt
 import numpy as np
 
+
+def detect_bad_channels(raw):
+    #mark exg channels not as eeg
+    exg_chs = [ch for ch in raw.ch_names if ch.startswith('EXG')]
+    raw.set_channel_types({ch: 'misc' for ch in exg_chs})
+
+    raw_prep = raw.copy().pick_types(eeg=True)
+    montage = mne.channels.make_standard_montage('standard_1020')
+    prep_params = {
+        'ref_chs': 'eeg',
+        'reref_chs': 'eeg',
+        'line_freqs': [50], #in case there is line noise left
+    }
+    prep = PrepPipeline(raw_prep, prep_params, montage=montage) #verbose=True prints every step
+    prep.fit()
+
+    # noisy: high varianz, unusual spectrum, high line noise, low correlation to neighbors;
+    # interpolated: completly flat, very noisy, not mathematically stable
+    bad_channels = prep.interpolated_channels + prep.still_noisy_channels
+    print("Detected bad channels:", bad_channels)
+
+    raw.info['bads'].extend(bad_channels)
+    raw.info['bads'] = list(set(raw.info['bads']))
+
+
+def detect_bad_annotationa(raw):
+    # mark exg channels not as eeg
+    exg_chs = [ch for ch in raw.ch_names if ch.startswith('EXG')]
+    raw.set_channel_types({ch: 'misc' for ch in exg_chs})
+
+    data = raw.get_data(picks='eeg')
+    ptp = np.ptp(data, axis=0)  # peak-to-peak pro Kanal
+
+    # Threshold: 99. Perzentil über Kanäle
+    threshold = np.percentile(ptp, 99)
+
+    # Bad-Kanäle / Segmente erkennen
+    bad_mask = ptp > threshold
+
+    onsets = raw.times[bad_mask]  # Zeitpunkte der Bad-Samples
+    durations = np.repeat(1 / raw.info['sfreq'], len(onsets))  # 1 Sample pro Segment
+    description = ['bad_amplitude'] * len(onsets)
+
+    annotations = mne.Annotations(onsets, durations, description)
+    raw.set_annotations(annotations)
 
 
 def remove_bad_channels(raw, subject, task):
