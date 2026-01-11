@@ -17,7 +17,7 @@ notch = 50
 sample_rate = 256 # resample to 256 Hz
 
 # Bad Channels - Please inspect visually before ICA and add them here
-bads = ["P1", "POz", "Pz", "Status", "EXG1", "EXG2", "EXG3", "EXG4", "EXG5", "EXG6", "EXG7", "EXG8"]
+bads = ["Status", "EXG1", "EXG2", "EXG3", "EXG4", "EXG5", "EXG6", "EXG7", "EXG8"]
 
 # time window for baseline correction
 tmin_baseline = -0.2 

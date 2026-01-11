@@ -14,15 +14,17 @@ if __name__ == "__main__":
 
             #resample and plot
             resample_raw = s_02_downsample.downsample_data(raw, config.sample_rate)
-            resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
+            #resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
 
             #filter and plot
             filter_raw = s_01_filter.filter(resample_raw)
             filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
-            s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-            filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
+            #s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            s_03_data_annotation.detect_bad_channels(filter_raw)
+            #s_03_data_annotation.detect_bad_annotationa(filter_raw)
+            #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
             #ica and plot
             clean_raw = s_04_ica.ica(filter_raw)
@@ -30,7 +32,7 @@ if __name__ == "__main__":
 
             # interpolation of bad and plot
             inter_raw = s_05_interpolation.interpolate_bad_channels(clean_raw)
-            inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
+            #inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
 
             # rereferencing and plot
             reref_raw = s_06_rereference.rereferencing(inter_raw)
