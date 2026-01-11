@@ -24,7 +24,7 @@ output: ica
 def get_ica(raw):
     ica = mne.preprocessing.ICA(
         n_components=0.99,
-        method="fastica", #"fastica"
+        method="infomax", #"fastica" -> use infomax because of icalabel recommendation
         max_iter="auto",
         random_state=97
     )
