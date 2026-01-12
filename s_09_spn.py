@@ -31,7 +31,7 @@ def compute_spn_posterior(erp_sym, erp_asym):
     spn = mne.combine_evoked([erp_sym_post, erp_asym_post], weights=[1, -1])
 
     # visualize SPN
-    plot_spn_vs_erps(erp_sym_post, erp_asym_post, spn, posterior_channels=config.posterior_channels)
+    #plot_spn_vs_erps(erp_sym_post, erp_asym_post, spn, posterior_channels=config.posterior_channels)
     
     spn_amplitude = extract_spn_amplitude(spn)
 

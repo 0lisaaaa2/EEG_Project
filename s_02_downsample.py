@@ -9,7 +9,7 @@ def downsample_data(raw, new_sfreq):
     print(f"Resampled frequency: {raw_resampled.info['sfreq']} Hz")
 
     # visualize difference
-    plot_raw_downsampling(raw, raw_resampled, ch_name='Cz')
+    #plot_raw_downsampling(raw, raw_resampled, ch_name='Cz')
 
     return raw_resampled
 

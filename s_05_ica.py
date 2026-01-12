@@ -70,8 +70,8 @@ def ica(raw):
     labels = label_components_ica(raw_ica, ica)
 
     # show time series of ICs
-    ica.plot_sources(raw, show_scrollbars=True, show=True)
-    ica.plot_components()
+    #ica.plot_sources(raw, show_scrollbars=True, show=True)
+    #ica.plot_components()
     
     exclude_components(ica, labels)
     raw_cleaned = ica.apply(raw.copy())
