@@ -1,7 +1,7 @@
 from config import subjects, tasks
 import config
 from collections import defaultdict
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq
 
 if __name__ == "__main__":
 
@@ -56,6 +56,16 @@ if __name__ == "__main__":
 
             # erp and baseline correct and plot
             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
+
+            # time frequency analysis
+            tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
+            tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
+            tfr_spn = tfr_sym.copy()
+            tfr_spn.data = tfr_sym.data - tfr_asym.data
+            s_12_timefreq.plot_tfr(tfr_sym, "SYM — Posterior Time-Frequency")
+            s_12_timefreq.plot_tfr(tfr_asym, "ASYM — Posterior Time-Frequency")
+            s_12_timefreq.plot_tfr(tfr_spn, "SPN (SYM − ASYM) — Time-Frequency")
+
 
             # spn
             spn, spn_amplitude = s_09_spn.compute_spn_posterior(erp_sym, erp_asym)
