@@ -1,7 +1,5 @@
 from config import subjects, tasks
 import config
-import mne
-import matplotlib.pyplot as plt
 from collections import defaultdict
 import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand
 
@@ -13,6 +11,7 @@ if __name__ == "__main__":
     grand_erps = defaultdict(list)   # keys: task, values: list of Evoked
     grand_costs = []                # list of perspective cost Evokeds
     grand_cost_amps = []
+    grand_spn_amps = defaultdict(list)  # keys: task, values: list of SPN amplitudes
 
     for subject in subjects:
         print("#######################################################################")
@@ -63,6 +62,7 @@ if __name__ == "__main__":
             spn_results[(subject, task)] = (spn, spn_amplitude)
             grand_spns[task].append(spn)
             grand_erps[task].append([erp_sym, erp_asym])
+            
 
         # perspective cost
         spn_front, spn_front_amp = spn_results[(subject, 'regfront')]
@@ -74,61 +74,44 @@ if __name__ == "__main__":
         # store for grand average
         grand_costs.append(perspective_cost_spn)
         grand_cost_amps.append(perspective_cost_amp)
-
-        s_10_cost.plot_spns_vs_pc(spn_front, spn_persp, perspective_cost_spn)
+        grand_spn_amps['regfront'].append(spn_front_amp)
+        grand_spn_amps['regperp'].append(spn_persp_amp)
+        
+        #s_10_cost.plot_spns_vs_pc(spn_front, spn_persp, perspective_cost_spn)
         print(f"Subject {subject} - Perspective Cost SPN Amplitude: {perspective_cost_amp}")
 
 
     print("\nComputing grand averages...")
 
+    # grand average over erps per task
+    grand_avg_erp_front_sym, grand_avg_erp_front_asym, grand_avg_erp_persp_sym, grand_avg_erp_persp_asym = s_11_grand.compute_grand_erp(grand_erps)
+    
     # Grand average SPN per task
-    grand_avg_spn_front = mne.grand_average(grand_spns['regfront'])
-    grand_avg_spn_persp = mne.grand_average(grand_spns['regperp'])
-
-     # grand average over erps per task
-    grand_avg_erp_front_sym = mne.grand_average([e[0] for e in grand_erps['regfront']])
-    grand_avg_erp_front_asym = mne.grand_average([e[1] for e in grand_erps['regfront']])
-
-    grand_avg_erp_persp_sym = mne.grand_average([e[0] for e in grand_erps['regperp']])
-    grand_avg_erp_persp_asym = mne.grand_average([e[1] for e in grand_erps['regperp']])
+    grand_avg_spn_front, grand_avg_spn_persp = s_11_grand.compute_grand_spn(grand_spns)
 
     # Grand average perspective cost
-    grand_avg_cost = mne.grand_average(grand_costs)
+    grand_avg_cost = s_11_grand.compute_grand_cost(grand_costs)
 
-    # Mean amplitude across subjects ??????
-    mean_cost_amp = sum(grand_cost_amps) / len(grand_cost_amps)
+    # Average amplitudes
+    grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp = s_11_grand.compute_grand_amps(grand_cost_amps, grand_spn_amps)
 
-    print(f"\nGrand-average Perspective Cost Amplitude: {mean_cost_amp * 1e6:.2f} µV")
-
-    # # Plot grand-average SPNs
-    # mne.viz.plot_compare_evokeds(
-    #     {"Frontoparallel": grand_avg_spn_front,
-    #     "Perspective": grand_avg_spn_persp},
-    #     combine="mean",
-    #     title="Grand Average SPN (Posterior Cluster)"
-    # )
+    print(f"Averaged amplitudes across all subjects: \n Frontoparallel: {grand_avg_spn_front_amp} \n Perspective: {grand_avg_spn_persp_amp} \n Perspective Cost: {grand_avg_cost_amp}")
 
 
-    # 1) ERP vs SPN — Frontoparallel
-    s_11_grand.plot_spn_vs_erps(
-        erp_sym=grand_avg_erp_front_sym,
-        erp_asym=grand_avg_erp_front_asym,
-        spn=grand_avg_spn_front
-    )
 
-    # 2) ERP vs SPN — Perspective
-    s_11_grand.plot_spn_vs_erps(
-        erp_sym=grand_avg_erp_persp_sym,
-        erp_asym=grand_avg_erp_persp_asym,
-        spn=grand_avg_spn_persp
-    )
+    # Plotting the results :)
 
-    # 3) SPNs vs Perspective Cost
-    s_11_grand.plot_spns_vs_pc(
-        spn_front=grand_avg_spn_front,
-        spn_persp=grand_avg_spn_persp,
-        perspective_cost=grand_avg_cost
-    )
+    # ERP vs SPN — Frontoparallel
+    s_11_grand.plot_spn_vs_erps(erp_sym=grand_avg_erp_front_sym, erp_asym=grand_avg_erp_front_asym, spn=grand_avg_spn_front)
+
+    # ERP vs SPN — Perspective
+    s_11_grand.plot_spn_vs_erps(erp_sym=grand_avg_erp_persp_sym, erp_asym=grand_avg_erp_persp_asym, spn=grand_avg_spn_persp)
+
+    # SPNs vs Perspective Cost
+    s_11_grand.plot_spns_vs_pc(spn_front=grand_avg_spn_front, spn_persp=grand_avg_spn_persp, perspective_cost=grand_avg_cost)
+
+    # Amplitude bar char
+    s_11_grand.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp)
 
     
 
