@@ -58,13 +58,16 @@ if __name__ == "__main__":
             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
 
             # time frequency analysis
-            tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
-            tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
-            tfr_spn = tfr_sym.copy()
-            tfr_spn.data = tfr_sym.data - tfr_asym.data
-            s_12_timefreq.plot_tfr(tfr_sym, "SYM — Posterior Time-Frequency")
-            s_12_timefreq.plot_tfr(tfr_asym, "ASYM — Posterior Time-Frequency")
-            s_12_timefreq.plot_tfr(tfr_spn, "SPN (SYM − ASYM) — Time-Frequency")
+            # tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
+            # tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
+            # tfr_spn = tfr_sym.copy()
+            # tfr_spn.data = tfr_sym.data - tfr_asym.data
+            # s_12_timefreq.plot_tfr(tfr_sym, "SYM — Posterior Time-Frequency")
+            # s_12_timefreq.plot_tfr(tfr_asym, "ASYM — Posterior Time-Frequency")
+            # s_12_timefreq.plot_tfr(tfr_spn, "SPN (SYM − ASYM) — Time-Frequency")
+
+            # tfr_sym = s_12_timefreq.compute_tfr_allelectrodes(epochs, "SYM")
+            # tfr_asym = s_12_timefreq.compute_tfr_allelectrodes(epochs, "ASYM")
 
 
             # spn
