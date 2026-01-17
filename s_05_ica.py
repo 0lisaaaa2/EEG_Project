@@ -8,12 +8,31 @@ input: raw (EEG data)
 output: raw_ica (copied and prepared EEG data)
 """
 def get_ica_copy(raw):
-    raw_ica = raw.copy().pick(picks=mne.pick_types(raw.info, eeg=True))
-    #raw_ica = raw.copy().pick(picks=mne.pick_types(raw.info, eeg=True, meg=False, eog=True, exclude='bads'))
-    raw_ica = raw_ica.filter(l_freq=1.0, h_freq=None)
+    raw_ica = raw.copy()
+
+    # 1. EXG korrekt typisieren (AUF raw_ica!)
+    raw_ica.set_channel_types({
+        'EXG1': 'eog',
+        'EXG2': 'eog',
+        'EXG3': 'eog',
+        'EXG4': 'eog',
+        'EXG5': 'emg',
+        'EXG6': 'emg',
+        'EXG7': 'misc',
+        'EXG8': 'misc',
+    })
+
+    # 2. Montage setzen (funktioniert jetzt)
     raw_ica.set_montage('standard_1020')
-    #raw_ica = raw_ica.set_eeg_reference('average') # is this required?
+
+    # 3. Nur EEG + EOG für ICA behalten
+    raw_ica.pick_types(eeg=True, eog=True, exclude='bads')
+
+    # 4. Hochpass für ICA
+    raw_ica.filter(l_freq=1.0, h_freq=None)
+
     return raw_ica
+
 
 
 """

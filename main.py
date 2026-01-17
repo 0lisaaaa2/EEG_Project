@@ -30,7 +30,7 @@ if __name__ == "__main__":
             #filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
-            s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            #s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
             #s_03_data_annotation.detect_bad_channels(filter_raw)
             #s_03_data_annotation.detect_bad_annotationa(filter_raw)
             #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
@@ -122,6 +122,8 @@ if __name__ == "__main__":
 
     # SPNs vs Perspective Cost
     s_11_grand.plot_spns_vs_pc(spn_front=grand_avg_spn_front, spn_persp=grand_avg_spn_persp, perspective_cost=grand_avg_cost)
+    
+    s_11_grand.plot_topography(spn_front=grand_avg_spn_front, spn_persp=grand_avg_spn_persp, perspective_cost=grand_avg_cost)
 
     # Amplitude bar char
     s_11_grand.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp)
@@ -129,4 +131,5 @@ if __name__ == "__main__":
     # Statistics
     s_13_stat.run_statistics(spn_front_values=grand_spn_amps['regfront'], perspective_cost_values=grand_cost_amps, alpha=0.02) # alpha = 0.011?
     s_13_stat.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp, grand_cost_amps, grand_spn_amps['regfront'], grand_spn_amps['regperp'], alpha=0.02)
+    
 
