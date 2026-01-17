@@ -55,7 +55,8 @@ def plot_spn_vs_erps(erp_sym, erp_asym, spn, posterior_channels=config.posterior
             "SPN (Sym − Asym)": "gray",
         },
         title="Posterior cluster ERPs and SPN",
-        ci=False
+        ci=False,
+        ylim=dict(eeg=(-10, 10))
     )
 
 
@@ -92,4 +93,51 @@ def plot_spn_amplitude(grand_avg_cost, grand_avg_front, grand_avg_perp):
     plt.ylabel('SPN Amplitude (microVolts)')
     plt.title('Average SPN Amplitudes Across All Subjects')
     plt.tight_layout
+    plt.show()
+
+def topo_data(evoked, tmin=0.3, tmax=0.6):
+    ev = evoked.copy().crop(tmin, tmax)
+    data = ev.data.mean(axis=1)
+    sd = np.std(data)
+    return data * 1e6, sd * 1e6
+
+def plot_topography(spn_front, spn_persp, perspective_cost):
+    fig, axes = plt.subplots(1, 3, figsize=(10, 3))
+    plt.subplots_adjust(wspace=0.4)
+
+    evokeds = [
+        spn_front,
+        spn_persp,
+        perspective_cost
+    ]
+
+    titles = ["Frontoparallel", "Perspective", "Cost"]
+    vlim = (-3, 1)  # µV – einheitlich!
+
+    for ax, evk, title in zip(axes, evokeds, titles):
+        data, sd = topo_data(evk)
+
+        im, _ = mne.viz.plot_topomap(
+            data,
+            evk.info,
+            axes=ax,
+            cmap='viridis',
+            vlim=vlim,
+            contours=0,
+            show=False
+        )
+
+        ax.set_title(f"{title}\nSD = {sd:.3f}", fontsize=10)
+
+    # Trennlinie vor Cost
+    fig.add_artist(plt.Line2D(
+        [0.67, 0.67], [0.15, 0.85],
+        transform=fig.transFigure,
+        color='black', linewidth=2
+    ))
+
+    # Farbskala
+    cax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
+    plt.colorbar(im, cax=cax, label="Amplitude in µV")
+
     plt.show()

@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
             # data annotation of bad channels and bad segmetns and plot
             #s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-            s_03_data_annotation.detect_bad_channels(filter_raw)
+            #s_03_data_annotation.detect_bad_channels(filter_raw)
             #s_03_data_annotation.detect_bad_annotationa(filter_raw)
             #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
@@ -126,5 +126,5 @@ if __name__ == "__main__":
     # Amplitude bar char
     s_11_grand.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp)
 
-    
+    s_11_grand.plot_topography(spn_front=grand_avg_spn_front, spn_persp=grand_avg_spn_persp, perspective_cost=grand_avg_cost)
 
