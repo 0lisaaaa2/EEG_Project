@@ -1,7 +1,7 @@
 from config import subjects, tasks
 import config
 from collections import defaultdict
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq
+import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat
 
 if __name__ == "__main__":
 
@@ -30,8 +30,8 @@ if __name__ == "__main__":
             #filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
-            #s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-            s_03_data_annotation.detect_bad_channels(filter_raw)
+            s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
+            #s_03_data_annotation.detect_bad_channels(filter_raw)
             #s_03_data_annotation.detect_bad_annotationa(filter_raw)
             #filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
@@ -126,5 +126,7 @@ if __name__ == "__main__":
     # Amplitude bar char
     s_11_grand.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp)
 
-    
+    # Statistics
+    s_13_stat.run_statistics(spn_front_values=grand_spn_amps['regfront'], perspective_cost_values=grand_cost_amps, alpha=0.02) # alpha = 0.011?
+    s_13_stat.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp, grand_cost_amps, grand_spn_amps['regfront'], grand_spn_amps['regperp'], alpha=0.02)
 

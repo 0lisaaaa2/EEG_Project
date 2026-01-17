@@ -86,10 +86,16 @@ def plot_spns_vs_pc(spn_front, spn_persp, perspective_cost, posterior_channels=c
 def plot_spn_amplitude(grand_avg_cost, grand_avg_front, grand_avg_perp):
     labels = ['Frontoparallel', 'Perspective', 'Perspective Cost']
     means = [grand_avg_front * 1e6, grand_avg_perp * 1e6, grand_avg_cost * 1e6]  # convert to µV
-    
+
     plt.figure(figsize=(8, 6))
     plt.bar(labels, means, color=['black', 'gray', 'red'])
-    plt.ylabel('SPN Amplitude (microVolts)')
+
+    # horizontal zero line
+    plt.axhline(0, linestyle='--', linewidth=1)
+
+    plt.ylabel('SPN Amplitude (miroVolts)')
     plt.title('Average SPN Amplitudes Across All Subjects')
-    plt.tight_layout
+
+    #plt.grid(axis='y', linestyle=':', alpha=0.6)
+    plt.tight_layout()
     plt.show()
