@@ -27,9 +27,8 @@ def run_statistics(spn_front_values, perspective_cost_values, alpha):
         print("H0 not rejected: Perspective cost not different from 0\n")
 
     # B - Test against 0.35 μV
-    # is it +0.35 or -0.35???????
-    res3 = stats.ttest_1samp(perspective_cost_values, 0.35e-6, alternative="less") # convert 0.35 microvolts to volts
-    dz3 = cohens_dz(perspective_cost_values, 0.35e-6)
+    res3 = stats.ttest_1samp(perspective_cost_values, -0.35e-6, alternative="greater") # convert 0.35 microvolts to volts
+    dz3 = cohens_dz(perspective_cost_values, -0.35e-6)
     print(f"Hypothesis 2B (0.35 μV): t={res3.statistic}, p={res3.pvalue}, dz={dz3}")
 
     if res3.pvalue < alpha:
