@@ -109,16 +109,14 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
     fig, axes = plt.subplots(1, 3, figsize=(10, 3))
     plt.subplots_adjust(wspace=0.4)
 
-    evokeds = [
-        spn_front,
-        spn_persp,
-        perspective_cost
-    ]
-
+    evokeds = [spn_front, spn_persp, perspective_cost]
     titles = ["Frontoparallel", "Perspective", "Cost"]
-    vlim = (-3, 1)  # µV – einheitlich!
+    vlims = [(-3, 1), (-3, 1), (-3, 0.5)]
 
-    for ax, evk, title in zip(axes, evokeds, titles):
+    ims = []
+
+    # 1️⃣ Topomaps
+    for ax, evk, title, vlim in zip(axes, evokeds, titles, vlims):
         data, sd = topo_data(evk)
 
         im, _ = mne.viz.plot_topomap(
@@ -128,20 +126,38 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
             cmap='viridis',
             vlim=vlim,
             contours=0,
+            sensors=True,
             show=False
         )
 
+        ims.append(im)
         ax.set_title(f"{title}\nSD = {sd:.3f}", fontsize=10)
 
-    # Trennlinie vor Cost
+    # 2️⃣ Colorbar für die beiden linken Köpfe (−3 bis 1)
+    plt.colorbar(
+        ims[0],
+        ax=axes[:2],
+        fraction=0.046,
+        pad=0.04,
+        label="Amplitude (µV)"
+    )
+
+    # 3️⃣ Trennlinie vor Cost
     fig.add_artist(plt.Line2D(
         [0.67, 0.67], [0.15, 0.85],
         transform=fig.transFigure,
         color='black', linewidth=2
     ))
 
-    # Farbskala
-    cax = fig.add_axes([0.92, 0.15, 0.02, 0.7])
-    plt.colorbar(im, cax=cax, label="Amplitude in µV")
+    # 4️⃣ Colorbar für Cost (−3 bis 0.5) mit 0.5-Schritten
+    cbar_cost = plt.colorbar(
+        ims[2],
+        ax=axes[2],
+        fraction=0.046,
+        pad=0.04,
+        label="Amplitude (µV)"
+    )
+
+    cbar_cost.set_ticks(np.arange(-3, 0.51, 0.5))
 
     plt.show()
