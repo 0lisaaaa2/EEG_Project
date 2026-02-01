@@ -123,11 +123,10 @@ if __name__ == "__main__":
     for cond, tfr_list in grand_tfrs.items():
         grand_avg_tfrs[cond] = mne.grand_average(tfr_list)
 
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SYM"], "Grand Avg SYM Front")
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_ASYM"], "Grand Avg ASYM Front")
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front")
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective")
-
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SYM"], "Grand Avg SYM Front", vmin=-0.4, vmax=0.4)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_ASYM"], "Grand Avg ASYM Front", vmin=-0.4, vmax=0.4)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
 
     # Plotting the results :)
 
