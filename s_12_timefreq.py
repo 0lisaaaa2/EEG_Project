@@ -55,11 +55,12 @@ def compute_tfr_allelectrodes(epochs, condition, posterior_channels=config.poste
     return power_total
 
 # plot tfr average over posterior electrodes
-def plot_tfr(power, title):
+def plot_tfr(power, title, vmin, vmax):
     power.plot(
         picks="all",
         combine="mean",   # average across posterior electrodes
-        title=title
+        title=title,
+        vlim=(vmin, vmax),
     )
 
 # plot tfr for all electrodes

@@ -1,11 +1,14 @@
 from config import subjects, tasks
 import config
 from collections import defaultdict
+import mne
 import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat
 
 if __name__ == "__main__":
 
     spn_results = {}
+
+    grand_tfrs = defaultdict(list)  # keys: task, values: list of TFRs
 
     grand_spns = defaultdict(list)   # keys: task, values: list of Evoked
     grand_erps = defaultdict(list)   # keys: task, values: list of Evoked
@@ -58,10 +61,15 @@ if __name__ == "__main__":
             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
 
             # time frequency analysis
-            # tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
-            # tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
-            # tfr_spn = tfr_sym.copy()
-            # tfr_spn.data = tfr_sym.data - tfr_asym.data
+            tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
+            tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
+            tfr_spn = tfr_sym.copy()
+            tfr_spn.data = tfr_sym.data - tfr_asym.data
+
+            grand_tfrs[f"{task}_SYM"].append(tfr_sym)
+            grand_tfrs[f"{task}_ASYM"].append(tfr_asym)
+            grand_tfrs[f"{task}_SPN"].append(tfr_spn)
+
             # s_12_timefreq.plot_tfr(tfr_sym, "SYM — Posterior Time-Frequency")
             # s_12_timefreq.plot_tfr(tfr_asym, "ASYM — Posterior Time-Frequency")
             # s_12_timefreq.plot_tfr(tfr_spn, "SPN (SYM − ASYM) — Time-Frequency")
@@ -110,7 +118,15 @@ if __name__ == "__main__":
 
     print(f"Averaged amplitudes across all subjects: \n Frontoparallel: {grand_avg_spn_front_amp} \n Perspective: {grand_avg_spn_persp_amp} \n Perspective Cost: {grand_avg_cost_amp}")
 
+    # Average timefrequency data
+    grand_avg_tfrs = {}
+    for cond, tfr_list in grand_tfrs.items():
+        grand_avg_tfrs[cond] = mne.grand_average(tfr_list)
 
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SYM"], "Grand Avg SYM Front", vmin=-0.4, vmax=0.4)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_ASYM"], "Grand Avg ASYM Front", vmin=-0.4, vmax=0.4)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
 
     # Plotting the results :)
 
