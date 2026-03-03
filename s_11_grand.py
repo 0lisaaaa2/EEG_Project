@@ -115,7 +115,7 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
 
     ims = []
 
-    # 1️⃣ Topomaps
+    # Topomaps
     for ax, evk, title, vlim in zip(axes, evokeds, titles, vlims):
         data, sd = topo_data(evk)
 
@@ -133,7 +133,7 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
         ims.append(im)
         ax.set_title(f"{title}\nSD = {sd:.3f}", fontsize=10)
 
-    # 2️⃣ Colorbar für die beiden linken Köpfe (−3 bis 1)
+    # Colorbar für die beiden linken Köpfe (−3 bis 1)
     plt.colorbar(
         ims[0],
         ax=axes[:2],
@@ -142,14 +142,14 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
         label="Amplitude (µV)"
     )
 
-    # 3️⃣ Trennlinie vor Cost
+    # Trennlinie vor Cost
     fig.add_artist(plt.Line2D(
         [0.67, 0.67], [0.15, 0.85],
         transform=fig.transFigure,
         color='black', linewidth=2
     ))
 
-    # 4️⃣ Colorbar für Cost (−3 bis 0.5) mit 0.5-Schritten
+    # Colorbar für Cost (−3 bis 0.5) mit 0.5-Schritten
     cbar_cost = plt.colorbar(
         ims[2],
         ax=axes[2],
