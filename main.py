@@ -118,15 +118,7 @@ if __name__ == "__main__":
 
     print(f"Averaged amplitudes across all subjects: \n Frontoparallel: {grand_avg_spn_front_amp} \n Perspective: {grand_avg_spn_persp_amp} \n Perspective Cost: {grand_avg_cost_amp}")
 
-    # Average timefrequency data
-    grand_avg_tfrs = {}
-    for cond, tfr_list in grand_tfrs.items():
-        grand_avg_tfrs[cond] = mne.grand_average(tfr_list)
-
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SYM"], "Grand Avg SYM Front", vmin=-0.4, vmax=0.4)
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_ASYM"], "Grand Avg ASYM Front", vmin=-0.4, vmax=0.4)
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
+    
 
     # Plotting the results :)
 
@@ -148,4 +140,24 @@ if __name__ == "__main__":
     s_13_stat.run_statistics(spn_front_values=grand_spn_amps['regfront'], perspective_cost_values=grand_cost_amps, alpha=0.02) # alpha = 0.011?
     s_13_stat.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp, grand_cost_amps, grand_spn_amps['regfront'], grand_spn_amps['regperp'], alpha=0.02)
     
+    # Fruther Analysis - Time-Frequency Analysis
+    # Average timefrequency data
+    grand_avg_tfrs = {}
+    for cond, tfr_list in grand_tfrs.items():
+        grand_avg_tfrs[cond] = mne.grand_average(tfr_list)
 
+    # Plot grand averages for both spn conditions
+    #s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SYM"], "Grand Avg SYM Front", vmin=-0.4, vmax=0.4)
+    #s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_ASYM"], "Grand Avg ASYM Front", vmin=-0.4, vmax=0.4)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
+    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
+    # plot difference between spn conditions
+    tfr_diff = grand_avg_tfrs["regfront_SPN"].copy()
+    tfr_diff.data = grand_avg_tfrs["regfront_SPN"].data - grand_avg_tfrs["regperp_SPN"].data
+    s_12_timefreq.plot_tfr(tfr_diff, "Grand Avg SPN Difference", vmin=-0.04, vmax=0.04)
+
+    # calculate effect size in alpha band
+    s_12_timefreq.calculate_effect_size(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"])
+
+    # tfr statistics between spn conditions
+    s_12_timefreq.run_statistics_tfr(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"], alpha=0.05, n_perm=1000)
