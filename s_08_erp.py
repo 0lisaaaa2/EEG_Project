@@ -22,10 +22,10 @@ def compute_erp_all(epochs):
     #plot_erps(erp_sym, erp_asym)
 
     # visualize ERPs for a specific channel, e.g., 'Cz' -> choose posterior channel
-    plot_erps_channel(erp_sym_all, erp_asym_all, channel_name='PO7')
+    #plot_erps_channel(erp_sym_all, erp_asym_all, channel_name='PO7')
 
     # butterfly plot for SYM condition
-    plot_butterfly(erp_sym_all, title="Butterfly Plot - SYM condition")
+    #plot_butterfly(erp_sym_all, title="Butterfly Plot - SYM condition")
 
     return erp_sym_all, erp_asym_all
 
