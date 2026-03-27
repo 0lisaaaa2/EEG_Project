@@ -1,12 +1,13 @@
 import mne
 from mne_icalabel import label_components
 
-
 """
 Get a copy of EEG data and prepare it for ICA
 input: raw (EEG data)
 output: raw_ica (copied and prepared EEG data)
 """
+
+
 def get_ica_copy(raw):
     raw_ica = raw.copy()
 
@@ -34,19 +35,20 @@ def get_ica_copy(raw):
     return raw_ica
 
 
-
 """
 Set ICA to use for fitting
 input: raw (EEG data)
 output: ica
 """
+
+
 def get_ica(raw):
     ica = mne.preprocessing.ICA(
-        n_components=20, # 0.99
-        method="infomax", #"fastica" -> use infomax because of icalabel recommendation
+        n_components=64,  # 0.99
+        method="infomax",  # "fastica" -> use infomax because of icalabel recommendation
         max_iter="auto",
         random_state=97,
-        verbose = False
+        verbose=False
     )
     return ica
 
@@ -55,9 +57,11 @@ def get_ica(raw):
 Label all components found during ICA
 input: raw (EEG Data), ica
 """
+
+
 def label_components_ica(raw, ica):
-    labels = label_components(raw, ica, method='iclabel') # probabilities per IC and category
-    #print(labels)
+    labels = label_components(raw, ica, method='iclabel')  # probabilities per IC and category
+    # print(labels)
     return labels
 
 
@@ -65,13 +69,15 @@ def label_components_ica(raw, ica):
 Exclude "bad" components.
 input: ica, labels
 """
+
+
 def exclude_components(ica, labels):
     # exlude everything that is not brain or other with a probability of at least 0.8
     excluded_components = [
         idx for idx, lbl in enumerate(labels['labels'])
         if lbl not in ['brain', 'other'] and labels['y_pred_proba'][idx] >= 0.8
     ]
-    #print(f"Excluding components: {excluded_components}")
+    # print(f"Excluding components: {excluded_components}")
     ica.exclude = excluded_components
 
 
@@ -80,6 +86,8 @@ Do ICA, plot and find and remove "bad" components
 input: raw (EEG Data)
 return: raw_cleaned (EEG Data after ICA)
 """
+
+
 def ica(raw):
     raw_ica = get_ica_copy(raw)
     ica = get_ica(raw_ica)
@@ -89,9 +97,10 @@ def ica(raw):
     labels = label_components_ica(raw_ica, ica)
 
     # show time series of ICs
-    #ica.plot_sources(raw, show_scrollbars=True, show=True)
-    #ica.plot_components()
-    
+    # ica.plot_sources(raw, show_scrollbars=True, show=True)
+    # ica.plot_components()
+
     exclude_components(ica, labels)
+    n_excluded = len(ica.exclude)
     raw_cleaned = ica.apply(raw.copy())
-    return raw_cleaned
+    return raw_cleaned, n_excluded
