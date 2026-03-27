@@ -15,10 +15,15 @@ def main_pipeline():
     grand_costs = []  # list of perspective cost Evokeds
     grand_cost_amps = []
     grand_spn_amps = defaultdict(list)  # keys: task, values: list of SPN amplitudes
+    rejected_components={}
+    rejected_trials={}
 
     for subject in subjects:
         print("#######################################################################")
         print("start subject", subject)
+        rejected_components[subject] = {}
+        rejected_trials[subject] = {}
+
         for task in tasks:
             # get raw data and plot
             raw = s_00_fetch_data.load_data(subject, task)
@@ -42,9 +47,10 @@ def main_pipeline():
             reref_raw = s_04_rereference.rereferencing(filter_raw)
             # reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
 
-            # ica and plot
-            clean_raw = s_05_ica.ica(reref_raw)
+            # ica and number of excluded components and plot
+            clean_raw, n_excluded = s_05_ica.ica(reref_raw)
             # clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
+            rejected_components[subject][task]=n_excluded
 
             # interpolation of bad and plot
             inter_raw = s_06_interpolation.interpolate_bad_channels(clean_raw)
@@ -57,8 +63,10 @@ def main_pipeline():
             # epoching and plot
             epochs = s_07_epochs.epoching(inter_raw)
 
+
             # erp and baseline correct and plot
             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
+
 
             # time frequency analysis
             tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
@@ -166,6 +174,8 @@ def main_pipeline():
     # tfr statistics between spn conditions
     s_12_timefreq.run_statistics_tfr(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"], alpha=0.05, n_perm=1000)
 
+    print(rejected_components)
+
 def alternative_testing_pipeline():
     erp_data = {}
     amplitudes_front_sym = []
@@ -247,5 +257,5 @@ def alternative_testing_pipeline():
 
 
 if __name__ == "__main__":
-    # main_pipeline()
-    alternative_testing_pipeline()
+    main_pipeline()
+    # alternative_testing_pipeline()
