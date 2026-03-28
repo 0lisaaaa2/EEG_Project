@@ -140,6 +140,9 @@ def main_pipeline():
 
     print("#########################################################################################################################################################")
     print("ICA rejected components:", rejected_components)
+    avg = sum([n for subj in rejected_components.values() for n in subj.values()]) / (len(subjects) * len(tasks))
+    print(f"Average number of rejected components per subject and task: {avg}")
+    
     print("\nComputing Grand Averages...")
 
     # grand average over erps per task
