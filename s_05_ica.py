@@ -50,7 +50,7 @@ def get_ica(raw):
 # label components using icalabel
 def label_components_ica(raw, ica):
     labels = label_components(raw, ica, method='iclabel')  # probabilities per IC and category
-    # print(labels)
+    #print(labels)
     return labels
 
 
@@ -60,7 +60,7 @@ def exclude_components(ica, labels):
         idx for idx, lbl in enumerate(labels['labels'])
         if lbl not in ['brain', 'other'] and labels['y_pred_proba'][idx] >= 0.8
     ]
-    # print(f"Excluding components: {excluded_components}")
+    #print(f"Excluding components: {excluded_components}")
     ica.exclude = excluded_components
 
 
@@ -75,7 +75,7 @@ def ica(raw):
 
     # show time series of ICs
     # ica.plot_sources(raw, show_scrollbars=True, show=True)
-    # ica.plot_components()
+    #ica.plot_components()
 
     exclude_components(ica, labels)
     n_excluded = len(ica.exclude)

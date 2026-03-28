@@ -4,7 +4,6 @@ from collections import defaultdict
 import mne
 import s_00_fetch_data, s_01_downsample, s_02_filter, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_stat, s_13_timefreq, s_14_additional_stat
 
-import s_03_temp
 
 """
 Main pipeline to run the full EEG data processing and analysis workflow for all subjects and tasks.
@@ -56,12 +55,8 @@ def main_pipeline():
             filter_raw = s_02_filter.filter(resample_raw)
             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
-            # data annotation of bad channels and bad segmetns and plot
-            s_03_temp.auto_preprocess(filter_raw, subject, task, overwrite=False)
-            # detect and annotate bad channels and segments
+            # data annotation of bad channels and bad segments and plot
             # s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-            # s_03_data_annotation.detect_bad_channels(filter_raw)
-            # s_03_data_annotation.detect_bad_annotations(filter_raw)
             # filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
             # # rereferencing
@@ -70,7 +65,7 @@ def main_pipeline():
 
             # apply ica
             clean_raw, n_excluded = s_05_ica.ica(reref_raw)
-            #rejected_components[subject][task]=n_excluded # track number of rejected components per subject and task
+            rejected_components[subject][task]=n_excluded # track number of rejected components per subject and task
             # clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
 
             # interpolation of bad channels 
@@ -203,91 +198,6 @@ def main_pipeline():
     # calculate effect size in alpha band
     s_13_timefreq.calculate_effect_size(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"])
     #s_12_timefreq.run_statistics_tfr(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"], alpha=0.05, n_perm=1000)
-
-
-
-
-
-
-# def alternative_testing_pipeline():
-#     erp_data = {}
-#     amplitudes_front_sym = []
-#     amplitudes_persp_sym = []
-#     amplitudes_front_asym = []
-#     amplitudes_persp_asym = []
-
-#     for subject in subjects:
-#         print("#######################################################################")
-#         print("start subject", subject)
-#         erp_data[subject] = {}
-#         for task in tasks:
-#             # get raw data and plot
-#             raw = s_00_fetch_data.load_data(subject, task)
-#             # raw.plot(block=True, scalings=40e-6, title='Raw Data')
-
-#             # resample and plot
-#             resample_raw = s_01_downsample.downsample_data(raw, config.sample_rate)
-#             # resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
-
-#             # filter and plot
-#             filter_raw = s_02_filter.filter(resample_raw)
-#             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
-
-#             # data annotation of bad channels and bad segmetns and plot
-#             # s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
-#             # s_03_data_annotation.detect_bad_channels(filter_raw)
-#             # s_03_data_annotation.detect_bad_annotationa(filter_raw)
-#             # filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
-
-#             # # rereferencing and plot -> move before ica
-#             reref_raw = s_04_rereference.rereferencing(filter_raw)
-#             # reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
-
-#             # ica and plot
-#             clean_raw = s_05_ica.ica(reref_raw)
-#             # clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
-
-#             # interpolation of bad and plot
-#             inter_raw = s_06_interpolation.interpolate_bad_channels(clean_raw)
-#             # inter_raw.plot(block=True, scalings=40e-6, title='Data after Interpolation of Bad Channels')
-
-#             # # rereferencing and plot -> move before ica
-#             # reref_raw = s_06_rereference.rereferencing(inter_raw)
-#             # reref_raw.plot(block=True, scalings=40e-6, title='Data after Rereferencing')
-
-#             # epoching and plot
-#             epochs = s_07_epochs.epoching(inter_raw)
-
-#             # erp and baseline correct and plot
-#             erp_sym, erp_asym = s_08_erp.compute_erp_all(epochs)
-
-#             # Für additional statistische tests
-#             if task == "regfront":
-#                 erp_data[subject]["front"] = {
-#                     "sym": erp_sym,
-#                     "asym": erp_asym
-#                 }
-#             if task == "regperp":
-#                 erp_data[subject]["pers"] = {
-#                     "sym": erp_sym,
-#                     "asym": erp_asym
-#                 }
-
-#         evoked_front_sym = erp_data[subject]["front"]["sym"]
-#         evoked_pers_sym = erp_data[subject]["pers"]["sym"]
-#         evoked_front_asym = erp_data[subject]["front"]["asym"]
-#         evoked_pers_asym = erp_data[subject]["pers"]["asym"]
-
-#         front_sym_val, pers_sym_val, front_asym_val, pers_asym_val = s_14_additional_stat.erp_to_amplitude(evoked_front_sym, evoked_pers_sym, evoked_front_asym, evoked_pers_asym)
-#         amplitudes_front_sym.append(front_sym_val)
-#         amplitudes_persp_sym.append(pers_sym_val)
-#         amplitudes_front_asym.append(front_asym_val)
-#         amplitudes_persp_asym.append(pers_asym_val)
-
-
-#     s_14_additional_stat.additional_t_test(amplitudes_persp_sym, amplitudes_front_sym, "sym")
-#     s_14_additional_stat.additional_t_test(amplitudes_persp_asym, amplitudes_front_asym, "asym")
-
 
 if __name__ == "__main__":
     main_pipeline()

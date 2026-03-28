@@ -34,8 +34,8 @@ Pipeline modules executed by 'main.py':
 - s_09_spn.py
 - s_10_cost.py
 - s_11_grand.py
-- s_12_timefreq.py
-- s_13_stat.py
+- s_12_stat.py
+- s_13_timefreq.py
 - s_14_additional_stat.py
 
 ### Workflow Overview
