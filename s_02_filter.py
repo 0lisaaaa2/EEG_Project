@@ -23,22 +23,22 @@ def frequencyspectrum(raw_before_filter, raw_after_highlow, raw_after_notch, fma
     psd_after_highlow = raw_after_highlow.compute_psd(fmax=fmax)
     psd_after_notch = raw_after_notch.compute_psd(fmax=fmax)
     
-    # # Calculate psd
+    # Calculate psd
     psd_before_filter = raw_before_filter.compute_psd(fmax=fmax)
     psd_after_highlow = raw_after_highlow.compute_psd(fmax=fmax)
     psd_after_notch = raw_after_notch.compute_psd(fmax=fmax)
 
-    # # Mean over all channels
+    # Mean over all channels
     psd_before_filter_mean = psd_before_filter.get_data().mean(axis=0)
     psd_after_highlow_mean = psd_after_highlow.get_data().mean(axis=0)
     psd_after_notch_mean = psd_after_notch.get_data().mean(axis=0)
 
-    # # Get frequenzies
+    # Get frequenies
     freqs_1 = psd_before_filter.freqs
     freqs_2 = psd_after_highlow.freqs
     freqs_3 = psd_after_notch.freqs
 
-    # # Plot the plot
+    # uncomment to plot the plot
     #plt.figure(figsize=(10, 5))
     #plt.plot(freqs_1, 10 * np.log10(psd_before_filter_mean), label='Before Filtering')
     #plt.plot(freqs_2, 10 * np.log10(psd_after_highlow_mean), label='After HighLowPass Filter')

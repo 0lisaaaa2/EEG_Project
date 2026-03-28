@@ -75,7 +75,7 @@ def ica(raw):
 
     # show time series of ICs
     # ica.plot_sources(raw, show_scrollbars=True, show=True)
-    #ica.plot_components()
+    # ica.plot_components()
 
     exclude_components(ica, labels)
     n_excluded = len(ica.exclude)
