@@ -1,8 +1,12 @@
 import mne
 
+"""
+Interpolate bad channels in the raw EEG data.
+"""
+
 def interpolate_bad_channels(raw):
     raw_interp = raw.copy()
-    print("Blub", raw_interp.info['bads'])  # ensure bads are set
+    #print("Bad channels:", raw_interp.info['bads']) 
 
     exg_channels = ["EXG1", "EXG2", "EXG3", "EXG4", "EXG5", "EXG6", "EXG7", "EXG8"]
     for ch in exg_channels:
@@ -13,9 +17,6 @@ def interpolate_bad_channels(raw):
     before = raw.copy().get_data(picks=["P1"])
     raw_interp.interpolate_bads(reset_bads=True)
     after = raw_interp.get_data(picks=["P1"])
-
-    #print("Before:", before[:,:5])
-    #print("After:", after[:,:5])
 
     #raw.plot(block=True, scalings=40e-6, picks=["P1", "POz", "Pz"])
     #raw_interp.plot(block=True, scalings=40e-6, picks=["P1", "POz", "Pz"])
