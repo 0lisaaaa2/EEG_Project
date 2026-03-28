@@ -4,6 +4,11 @@ from collections import defaultdict
 import mne
 import s_00_fetch_data, s_01_downsample, s_02_filter, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat, s_14_additional_stat
 
+"""
+Main pipeline to run the full EEG data processing and analysis workflow for all subjects and tasks.
+"""
+
+
 def main_pipeline():
     # storage for results
     spn_results = {}
@@ -105,8 +110,8 @@ def main_pipeline():
         spn_front, spn_front_amp = spn_results[(subject, 'regfront')]
         spn_persp, spn_persp_amp = spn_results[(subject, 'regperp')]
 
-        perspective_cost_spn = s_10_cost.comput_perspective_cost_spn(spn_front, spn_persp)
-        perspective_cost_amp = s_10_cost.comput_perspective_cost_amp(spn_front_amp, spn_persp_amp)
+        perspective_cost_spn = s_10_cost.compute_perspective_cost_spn(spn_front, spn_persp)
+        perspective_cost_amp = s_10_cost.compute_perspective_cost_amp(spn_front_amp, spn_persp_amp)
 
         grand_costs.append(perspective_cost_spn)
         grand_cost_amps.append(perspective_cost_amp)

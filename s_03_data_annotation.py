@@ -5,6 +5,10 @@ from pyprep.prep_pipeline import PrepPipeline
 import matplotlib.pyplot as plt
 import numpy as np
 
+"""
+Detect and annotate bad channels 
+"""
+
 
 def detect_bad_channels(raw):
     #mark exg channels not as eeg

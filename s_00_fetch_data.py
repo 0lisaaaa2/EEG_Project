@@ -1,8 +1,9 @@
-import mne
 from mne_bids import BIDSPath, read_raw_bids
-import numpy as np
-
 import config
+
+"""
+Load raw EEG data for a given subject and task using MNE-BIDS.
+"""
 
 def load_data(sub, task):
 
