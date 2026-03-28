@@ -1,17 +1,15 @@
 import mne
 
-"""Epoch the raw data around events.
+"""
+Epoch the raw data around events.
+"""
 
-    input: raw (EEG Data), event_id (dict of event labels and their IDs), tmin (start time before event), tmax (end time after event)
-    return: epochs (Epoched EEG Data)
-    """
+# epoch with a time window from -200 ms to 800 ms around the event onset
 def epoching(raw, tmin=-0.2, tmax=0.8):
 
     events, event_id = mne.events_from_annotations(raw)
-    #print("evnets", events)
-    #print("event_id", event_id)
 
-    # set rejection criteria for peak to peak
+    # set rejection criteria for peak to peak rejection
     reject_criteria = dict(eeg=200e-6) # 200 µV
 
     epochs = mne.Epochs(raw, events, event_id, tmin, tmax, reject_by_annotation=True, event_repeated='drop', reject=reject_criteria)

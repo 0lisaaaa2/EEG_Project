@@ -2,16 +2,16 @@ import mne
 from mne_icalabel import label_components
 
 """
-Get a copy of EEG data and prepare it for ICA
-input: raw (EEG data)
-output: raw_ica (copied and prepared EEG data)
+Applies ICA to the raw EEG data, identifies and excludes "bad" components, and returns the cleaned data.
 """
 
 
+
+# get copy of EEG data and prepare it for ICA
 def get_ica_copy(raw):
     raw_ica = raw.copy()
 
-    # 1. EXG korrekt typisieren (AUF raw_ica!)
+    # EXG correctly typed (ON raw_ica!)
     raw_ica.set_channel_types({
         'EXG1': 'eog',
         'EXG2': 'eog',
@@ -23,28 +23,22 @@ def get_ica_copy(raw):
         'EXG8': 'misc',
     })
 
-    # 2. Montage setzen (funktioniert jetzt)
+    # set montage for ICA data 
     raw_ica.set_montage('standard_1020')
 
-    # 3. Nur EEG + EOG für ICA behalten
+    # for ica, only keep eeg and eog channels, exclude bad channels
     raw_ica.pick_types(eeg=True, eog=True, exclude='bads')
 
-    # 4. Hochpass für ICA
+    # apply a high-pass filter to remove slow drifts that can interfere with ICA decomposition
     raw_ica.filter(l_freq=1.0, h_freq=None)
 
     return raw_ica
 
 
-"""
-Set ICA to use for fitting
-input: raw (EEG data)
-output: ica
-"""
-
-
+# set ICA to use for fitting
 def get_ica(raw):
     ica = mne.preprocessing.ICA(
-        n_components=64,  # 0.99
+        n_components=len(mne.pick_types(raw.info, eeg=True)), 
         method="infomax",  # "fastica" -> use infomax because of icalabel recommendation
         max_iter="auto",
         random_state=97,
@@ -53,26 +47,15 @@ def get_ica(raw):
     return ica
 
 
-"""
-Label all components found during ICA
-input: raw (EEG Data), ica
-"""
-
-
+# label components using icalabel
 def label_components_ica(raw, ica):
     labels = label_components(raw, ica, method='iclabel')  # probabilities per IC and category
     # print(labels)
     return labels
 
 
-"""
-Exclude "bad" components.
-input: ica, labels
-"""
-
-
+# exclude components that are not brain or other with a probability of at least 0.8
 def exclude_components(ica, labels):
-    # exlude everything that is not brain or other with a probability of at least 0.8
     excluded_components = [
         idx for idx, lbl in enumerate(labels['labels'])
         if lbl not in ['brain', 'other'] and labels['y_pred_proba'][idx] >= 0.8
@@ -81,13 +64,7 @@ def exclude_components(ica, labels):
     ica.exclude = excluded_components
 
 
-"""
-Do ICA, plot and find and remove "bad" components
-input: raw (EEG Data)
-return: raw_cleaned (EEG Data after ICA)
-"""
-
-
+# main function to do ICA and return cleaned data
 def ica(raw):
     raw_ica = get_ica_copy(raw)
     ica = get_ica(raw_ica)

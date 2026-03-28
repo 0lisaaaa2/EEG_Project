@@ -3,8 +3,11 @@ import matplotlib.pyplot as plt
 import config
 import numpy as np
 
-# Compute grand averages 
+"""
+Compute grand averages across all subjects for ERPs, SPNs, perspective cost, and SPN amplitudes, and plot them.
+"""
 
+# grand average for erps
 def compute_grand_erp(grand_erps):
     grand_avg_erp_front_sym = mne.grand_average([e[0] for e in grand_erps['regfront']])
     grand_avg_erp_front_asym = mne.grand_average([e[1] for e in grand_erps['regfront']])
@@ -14,16 +17,19 @@ def compute_grand_erp(grand_erps):
 
     return grand_avg_erp_front_sym, grand_avg_erp_front_asym, grand_avg_erp_persp_sym, grand_avg_erp_persp_asym
 
+# grand average for spns
 def compute_grand_spn(grand_spns):
     grand_avg_spn_front = mne.grand_average(grand_spns['regfront'])
     grand_avg_spn_persp = mne.grand_average(grand_spns['regperp'])
 
     return grand_avg_spn_front, grand_avg_spn_persp
 
+# grand average for perspective cost
 def compute_grand_cost(grand_costs):
     grand_avg_cost = mne.grand_average(grand_costs)
     return grand_avg_cost
 
+# grand average for spn amplitudes
 def compute_grand_amps(grand_cost_amps, grand_spn_amps):
     grand_avg_cost_amp = np.mean(grand_cost_amps)
     grand_avg_spn_front_amp = np.mean(grand_spn_amps['regfront'])
@@ -32,7 +38,7 @@ def compute_grand_amps(grand_cost_amps, grand_spn_amps):
     return grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp
 
 
-# Plots
+################### Plotting 
 
 # plot spn vs erps in one plot
 def plot_spn_vs_erps(erp_sym, erp_asym, spn, posterior_channels=config.posterior_channels):
@@ -60,7 +66,7 @@ def plot_spn_vs_erps(erp_sym, erp_asym, spn, posterior_channels=config.posterior
     )
 
 
-# spns vs perspective cost
+# plot spns vs perspective cost
 def plot_spns_vs_pc(spn_front, spn_persp, perspective_cost, posterior_channels=config.posterior_channels):
 
     spn_front_post = spn_front.copy().pick_channels(posterior_channels)
@@ -83,7 +89,7 @@ def plot_spns_vs_pc(spn_front, spn_persp, perspective_cost, posterior_channels=c
         ci=False
     )
 
-# amplitude bar chart
+# plot amplitude bar chart
 def plot_spn_amplitude(grand_avg_cost, grand_avg_front, grand_avg_perp):
     labels = ['Frontoparallel', 'Perspective', 'Perspective Cost']
     means = [grand_avg_front * 1e6, grand_avg_perp * 1e6, grand_avg_cost * 1e6]  # convert to µV
@@ -99,6 +105,8 @@ def plot_spn_amplitude(grand_avg_cost, grand_avg_front, grand_avg_perp):
     plt.tight_layout
     plt.show()
 
+
+# plot topography of spns and perspective cost
 def topo_data(evoked, tmin=0.3, tmax=0.6):
     ev = evoked.copy().crop(tmin, tmax)
     data = ev.data.mean(axis=1)
@@ -133,7 +141,7 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
         ims.append(im)
         ax.set_title(f"{title}\nSD = {sd:.3f}", fontsize=10)
 
-    # Colorbar für die beiden linken Köpfe (−3 bis 1)
+    # Colorbar for spns
     plt.colorbar(
         ims[0],
         ax=axes[:2],
@@ -142,14 +150,14 @@ def plot_topography(spn_front, spn_persp, perspective_cost):
         label="Amplitude (µV)"
     )
 
-    # Trennlinie vor Cost
+    # separating line 
     fig.add_artist(plt.Line2D(
         [0.67, 0.67], [0.15, 0.85],
         transform=fig.transFigure,
         color='black', linewidth=2
     ))
 
-    # Colorbar für Cost (−3 bis 0.5) mit 0.5-Schritten
+    # colorbar for cost
     cbar_cost = plt.colorbar(
         ims[2],
         ax=axes[2],

@@ -5,5 +5,4 @@ sub-001/
 data/
 *.bdf
 venv/
-bad_annotations.csv
-bad_annotations.fif
+annotations/
