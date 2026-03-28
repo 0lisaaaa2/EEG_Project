@@ -2,7 +2,9 @@ from config import subjects, tasks
 import config
 from collections import defaultdict
 import mne
-import s_00_fetch_data, s_01_downsample, s_02_filter, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat, s_14_additional_stat
+import s_00_fetch_data, s_01_downsample, s_02_filter, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_stat, s_13_timefreq, s_14_additional_stat
+
+import s_03_temp
 
 """
 Main pipeline to run the full EEG data processing and analysis workflow for all subjects and tasks.
@@ -55,10 +57,11 @@ def main_pipeline():
             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
+            s_03_temp.auto_preprocess(filter_raw, subject, task, overwrite=False)
             # detect and annotate bad channels and segments
             # s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
             # s_03_data_annotation.detect_bad_channels(filter_raw)
-            # s_03_data_annotation.detect_bad_annotationa(filter_raw)
+            # s_03_data_annotation.detect_bad_annotations(filter_raw)
             # filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 
             # # rereferencing
@@ -67,7 +70,7 @@ def main_pipeline():
 
             # apply ica
             clean_raw, n_excluded = s_05_ica.ica(reref_raw)
-            rejected_components[subject][task]=n_excluded # track number of rejected components per subject and task
+            #rejected_components[subject][task]=n_excluded # track number of rejected components per subject and task
             # clean_raw.plot(block=True, scalings=40e-6, title='Data after ICA Cleaning')
 
             # interpolation of bad channels 
@@ -86,8 +89,8 @@ def main_pipeline():
                 erp_data[subject]["pers"] = {"sym": erp_sym, "asym": erp_asym}
 
             # time frequency analysis (further analysis)
-            tfr_sym = s_12_timefreq.compute_tfr(epochs, "SYM")
-            tfr_asym = s_12_timefreq.compute_tfr(epochs, "ASYM")
+            tfr_sym = s_13_timefreq.compute_tfr(epochs, "SYM")
+            tfr_asym = s_13_timefreq.compute_tfr(epochs, "ASYM")
             tfr_spn = tfr_sym.copy()
             tfr_spn.data = tfr_sym.data - tfr_asym.data
 
@@ -169,10 +172,10 @@ def main_pipeline():
     s_11_grand.plot_topography(spn_front=grand_avg_spn_front, spn_persp=grand_avg_spn_persp, perspective_cost=grand_avg_cost)
     
     # Plotting average SPN amplitudes and Perspective Cost amplitude
-    s_13_stat.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp, grand_cost_amps, grand_spn_amps['regfront'], grand_spn_amps['regperp'], alpha=0.02)
+    s_12_stat.plot_spn_amplitude(grand_avg_cost_amp, grand_avg_spn_front_amp, grand_avg_spn_persp_amp, grand_cost_amps, grand_spn_amps['regfront'], grand_spn_amps['regperp'], alpha=0.02)
     
     # Calculate Statistics
-    s_13_stat.run_statistics(spn_front_values=grand_spn_amps['regfront'], perspective_cost_values=grand_cost_amps, alpha=0.02)
+    s_12_stat.run_statistics(spn_front_values=grand_spn_amps['regfront'], perspective_cost_values=grand_cost_amps, alpha=0.02)
     
 
     ############ Further Analysis - Additional Statistical Tests for ERPs + Time Frequency Analysis
@@ -188,14 +191,14 @@ def main_pipeline():
         grand_avg_tfrs[cond] = mne.grand_average(tfr_list)
 
     # Plot grand averages for both spn conditions and their difference
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
-    s_12_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
+    s_13_timefreq.plot_tfr(grand_avg_tfrs["regfront_SPN"], "Grand Avg SPN Front", vmin=-0.04, vmax=0.04)
+    s_13_timefreq.plot_tfr(grand_avg_tfrs["regperp_SPN"], "Grand Avg SPN Perspective", vmin=-0.04, vmax=0.04)
     tfr_diff = grand_avg_tfrs["regfront_SPN"].copy()
     tfr_diff.data = grand_avg_tfrs["regfront_SPN"].data - grand_avg_tfrs["regperp_SPN"].data
-    s_12_timefreq.plot_tfr(tfr_diff, "Grand Avg SPN Difference", vmin=-0.04, vmax=0.04)
+    s_13_timefreq.plot_tfr(tfr_diff, "Grand Avg SPN Difference", vmin=-0.04, vmax=0.04)
 
     # calculate effect size in alpha band
-    s_12_timefreq.calculate_effect_size(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"])
+    s_13_timefreq.calculate_effect_size(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"])
     #s_12_timefreq.run_statistics_tfr(grand_tfrs["regfront_SPN"], grand_tfrs["regperp_SPN"], alpha=0.05, n_perm=1000)
 
 

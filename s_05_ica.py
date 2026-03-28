@@ -38,7 +38,7 @@ def get_ica_copy(raw):
 # set ICA to use for fitting
 def get_ica(raw):
     ica = mne.preprocessing.ICA(
-        n_components=64, 
+        n_components=len(mne.pick_types(raw.info, eeg=True)), 
         method="infomax",  # "fastica" -> use infomax because of icalabel recommendation
         max_iter="auto",
         random_state=97,

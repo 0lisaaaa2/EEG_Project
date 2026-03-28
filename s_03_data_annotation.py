@@ -34,26 +34,26 @@ def detect_bad_channels(raw):
     raw.info['bads'] = list(set(raw.info['bads']))
 
 
-def detect_bad_annotationa(raw):
-    # mark exg channels not as eeg
-    exg_chs = [ch for ch in raw.ch_names if ch.startswith('EXG')]
-    raw.set_channel_types({ch: 'misc' for ch in exg_chs})
+# def detect_bad_annotations(raw):
+#     # mark exg channels not as eeg
+#     exg_chs = [ch for ch in raw.ch_names if ch.startswith('EXG')]
+#     raw.set_channel_types({ch: 'misc' for ch in exg_chs})
 
-    data = raw.get_data(picks='eeg')
-    ptp = np.ptp(data, axis=0)  # peak-to-peak pro Kanal
+#     data = raw.get_data(picks='eeg')
+#     ptp = np.ptp(data, axis=0)  # peak-to-peak pro Kanal
 
-    # Threshold: 99. Perzentil über Kanäle
-    threshold = np.percentile(ptp, 99)
+#     # Threshold: 99. Perzentil über Kanäle
+#     threshold = np.percentile(ptp, 99)
 
-    # Bad-Kanäle / Segmente erkennen
-    bad_mask = ptp > threshold
+#     # Bad-Kanäle / Segmente erkennen
+#     bad_mask = ptp > threshold
 
-    onsets = raw.times[bad_mask]  # Zeitpunkte der Bad-Samples
-    durations = np.repeat(1 / raw.info['sfreq'], len(onsets))  # 1 Sample pro Segment
-    description = ['bad_amplitude'] * len(onsets)
+#     onsets = raw.times[bad_mask]  # Zeitpunkte der Bad-Samples
+#     durations = np.repeat(1 / raw.info['sfreq'], len(onsets))  # 1 Sample pro Segment
+#     description = ['bad_amplitude'] * len(onsets)
 
-    annotations = mne.Annotations(onsets, durations, description)
-    raw.set_annotations(annotations)
+#     annotations = mne.Annotations(onsets, durations, description)
+#     raw.set_annotations(annotations)
 
 
 def remove_bad_channels(raw, subject, task):
