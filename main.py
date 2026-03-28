@@ -2,8 +2,7 @@ from config import subjects, tasks
 import config
 from collections import defaultdict
 import mne
-import numpy as np
-import s_00_fetch_data, s_01_filter, s_02_downsample, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat, s_14_additional_stat
+import s_00_fetch_data, s_01_downsample, s_02_filter, s_03_data_annotation, s_05_ica, s_06_interpolation, s_04_rereference, s_07_epochs, s_08_erp, s_09_spn, s_10_cost, s_11_grand, s_12_timefreq, s_13_stat, s_14_additional_stat
 
 def main_pipeline():
     spn_results = {}
@@ -30,11 +29,11 @@ def main_pipeline():
             # raw.plot(block=True, scalings=40e-6, title='Raw Data')
 
             # resample and plot
-            resample_raw = s_02_downsample.downsample_data(raw, config.sample_rate)
+            resample_raw = s_01_downsample.downsample_data(raw, config.sample_rate)
             # resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
 
             # filter and plot
-            filter_raw = s_01_filter.filter(resample_raw)
+            filter_raw = s_02_filter.filter(resample_raw)
             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
@@ -193,11 +192,11 @@ def alternative_testing_pipeline():
             # raw.plot(block=True, scalings=40e-6, title='Raw Data')
 
             # resample and plot
-            resample_raw = s_02_downsample.downsample_data(raw, config.sample_rate)
+            resample_raw = s_01_downsample.downsample_data(raw, config.sample_rate)
             # resample_raw.plot(block=True, scalings=40e-6, title='Data after Resampling')
 
             # filter and plot
-            filter_raw = s_01_filter.filter(resample_raw)
+            filter_raw = s_02_filter.filter(resample_raw)
             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
             # data annotation of bad channels and bad segmetns and plot
