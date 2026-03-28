@@ -55,7 +55,8 @@ def main_pipeline():
             filter_raw = s_02_filter.filter(resample_raw)
             # filter_raw.plot(block=True, scalings=40e-6,  title='Data after Filtering')
 
-            # data annotation of bad channels and bad segments and plot
+            # data annotation of bad channels and bad segments
+            # uncomment to do manual annotation for each subject and task (only has to be done once, then the annotations are saved and automatically applied in subsequent runs)
             # s_03_data_annotation.remove_bad_channels(filter_raw, subject, task)
             # filter_raw.plot(block=True, scalings=40e-6, title='Data after After Annotation (No Change!)')
 

@@ -1,8 +1,6 @@
 
 # specify BIDS root directory
 bids_root = "ds005841-download"
-# root of derivates directory in which the pipeline will store the processing results
-#deriv_root = "output/ds005841"
 anno_root = "annotations"
 
 # choose subjects and tasks to process
